@@ -8,5 +8,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#EF792A</color>
-    <color name="bground">#FFD1D1</color>
+    <color name="light_pink">#FDE7E7</color>
+    <color name="hell_pink">#FFD4D4</color>
+    <color name="dark_green">#1F4016</color>
+    <color name="light_green">#E2EFDF</color>
+    <color name="light_yellow">#EFEFDF</color>
+    <color name="cards_background">#F1E8D8</color>
+
+
 </resources>
