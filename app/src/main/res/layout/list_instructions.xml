@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/light_pink"
-    app:cardElevation="8dp"
-    android:layout_margin="8dp">
+    >
 
     <LinearLayout
         android:orientation="vertical"
@@ -25,7 +24,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_instruction_steps"
-            android:layout_margin="4dp"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

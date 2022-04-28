@@ -3,9 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/light_pink"
-    app:cardElevation="8dp"
-    android:layout_margin="4dp">
+    app:cardBackgroundColor="@color/light_pink">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -30,7 +28,7 @@
             <TextView
                 android:id="@+id/textView_instructions_step_title"
                 android:text="Step name"
-                android:textStyle="bold"
+                android:textStyle="italic"
                 android:textSize="18sp"
                 android:textAlignment="textStart"
                 android:textColor="@color/dark_green"
