@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/light_pink"
     app:cardElevation="8dp"
     android:layout_margin="4dp">
     <LinearLayout
@@ -22,7 +22,7 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:textAlignment="center"
-                android:textColor="@color/orange"
+                android:textColor="@color/dark_green"
                 android:padding="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -33,7 +33,7 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:textAlignment="textStart"
-                android:textColor="@color/black"
+                android:textColor="@color/dark_green"
                 android:padding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -46,8 +46,9 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/textView_equipments"
                 android:text="Equipments"
-                android:textColor="@color/orange"
+                android:textColor="@color/dark_pink"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -67,8 +68,9 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/textView_ingredients"
                 android:text="Ingredients"
-                android:textColor="@color/orange"
+                android:textColor="@color/dark_pink"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
                 android:textStyle="bold"

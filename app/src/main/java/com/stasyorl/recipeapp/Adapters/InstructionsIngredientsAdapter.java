@@ -43,6 +43,17 @@ public class InstructionsIngredientsAdapter extends RecyclerView.Adapter<Instruc
     public int getItemCount() {
         return list.size();
     }
+
+    public boolean isEmpty(){
+        if(list.size() == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
 }
 class InstructionIngredientsViewHolder extends RecyclerView.ViewHolder{
     ImageView imageView_instructions_step_items;

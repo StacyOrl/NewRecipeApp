@@ -44,6 +44,15 @@ public class InstructionsEquipmentsAdapter extends RecyclerView.Adapter<Instruct
     public int getItemCount() {
         return list.size();
     }
+
+    public boolean isEmpty(){
+        if(list.size() == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
 
 class InstructionEquipmentsViewHolder extends RecyclerView.ViewHolder{

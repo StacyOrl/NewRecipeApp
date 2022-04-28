@@ -12,8 +12,9 @@
     <color name="hell_pink">#FFD4D4</color>
     <color name="dark_green">#1F4016</color>
     <color name="light_green">#E2EFDF</color>
-    <color name="light_yellow">#EFEFDF</color>
+    <color name="light_yellow">#FAFBE5</color>
     <color name="cards_background">#F1E8D8</color>
+    <color name="dark_pink">#CC225F</color>
 
 
 </resources>

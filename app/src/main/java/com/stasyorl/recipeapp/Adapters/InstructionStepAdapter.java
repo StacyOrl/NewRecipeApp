@@ -39,12 +39,20 @@ public class InstructionStepAdapter extends RecyclerView.Adapter<InstructionStep
         holder.recycler_instructions_ingredients.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         InstructionsIngredientsAdapter instructionsIngredientsAdapter = new InstructionsIngredientsAdapter(context, list.get(position).ingredients);
         holder.recycler_instructions_ingredients.setAdapter(instructionsIngredientsAdapter);
+        if (instructionsIngredientsAdapter.isEmpty()){
+            holder.textView_ingredients.setVisibility(View.GONE);
+        }
+
 
 
         holder.recycler_instructions_equipments.setHasFixedSize(true);
         holder.recycler_instructions_equipments.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         InstructionsEquipmentsAdapter instructionsEquipmentsAdapter = new InstructionsEquipmentsAdapter(context, list.get(position).equipment);
         holder.recycler_instructions_equipments.setAdapter(instructionsEquipmentsAdapter);
+
+        if (instructionsEquipmentsAdapter.isEmpty()){
+            holder.textView_equipments.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -53,7 +61,7 @@ public class InstructionStepAdapter extends RecyclerView.Adapter<InstructionStep
     }
 }
 class InstructionStepViewHolder extends RecyclerView.ViewHolder {
-    TextView textView_instructions_step_number, textView_instructions_step_title;
+    TextView textView_instructions_step_number, textView_instructions_step_title, textView_ingredients, textView_equipments;
     RecyclerView recycler_instructions_equipments, recycler_instructions_ingredients;
 
     public InstructionStepViewHolder(@NonNull View itemView) {
@@ -63,6 +71,8 @@ class InstructionStepViewHolder extends RecyclerView.ViewHolder {
         textView_instructions_step_title = itemView.findViewById(R.id.textView_instructions_step_title);
         recycler_instructions_equipments = itemView.findViewById(R.id.recycler_instructions_equipments);
         recycler_instructions_ingredients = itemView.findViewById(R.id.recycler_instructions_ingredients);
+        textView_ingredients = itemView.findViewById(R.id.textView_ingredients);
+        textView_equipments = itemView.findViewById(R.id.textView_equipments);
 
 
     }
