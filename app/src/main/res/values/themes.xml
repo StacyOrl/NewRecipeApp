@@ -15,5 +15,8 @@
 
         <item name = "android:editTextColor">@color/white</item>
         <item name = "android:textColorHint">@color/dark_green</item>
+
+        <item name="windowNoTitle">true</item>
+
     </style>
 </resources>
