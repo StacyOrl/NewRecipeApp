@@ -6,12 +6,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.media.tv.TvContract;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,40 +100,28 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             ingredientsAdapter = new IngredientsAdapter(RecipeDetailsActivity.this, response.extendedIngredients);
             recycler_meal_ingredients.setAdapter(ingredientsAdapter);
 
-            imageView_plus_description.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    textView_meal_summory.setVisibility(View.VISIBLE);
-                    imageView_minus_description.setVisibility(View.VISIBLE);
-                    imageView_plus_description.setVisibility(View.GONE);
-                }
+            imageView_plus_description.setOnClickListener(view -> {
+                textView_meal_summory.setVisibility(View.VISIBLE);
+                imageView_minus_description.setVisibility(View.VISIBLE);
+                imageView_plus_description.setVisibility(View.GONE);
             });
 
-            imageView_minus_description.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    textView_meal_summory.setVisibility(View.GONE);
-                    imageView_plus_description.setVisibility(View.VISIBLE);
-                    imageView_minus_description.setVisibility(View.GONE);
-                }
+            imageView_minus_description.setOnClickListener(view -> {
+                textView_meal_summory.setVisibility(View.GONE);
+                imageView_plus_description.setVisibility(View.VISIBLE);
+                imageView_minus_description.setVisibility(View.GONE);
             });
 
-            imageView_plus_instructions.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    recycler_meal_instructions.setVisibility(View.VISIBLE);
-                    imageView_minus_instruction.setVisibility(View.VISIBLE);
-                    imageView_plus_instructions.setVisibility(View.GONE);
-                }
+            imageView_plus_instructions.setOnClickListener(view -> {
+                recycler_meal_instructions.setVisibility(View.VISIBLE);
+                imageView_minus_instruction.setVisibility(View.VISIBLE);
+                imageView_plus_instructions.setVisibility(View.GONE);
             });
 
-            imageView_minus_instruction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    recycler_meal_instructions.setVisibility(View.GONE);
-                    imageView_plus_instructions.setVisibility(View.VISIBLE);
-                    imageView_minus_instruction.setVisibility(View.GONE);
-                }
+            imageView_minus_instruction.setOnClickListener(view -> {
+                recycler_meal_instructions.setVisibility(View.GONE);
+                imageView_plus_instructions.setVisibility(View.VISIBLE);
+                imageView_minus_instruction.setVisibility(View.GONE);
             });
 
 
@@ -166,13 +151,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         }
     };
 
-    private final RecipeClickListener recipeClickListener = new RecipeClickListener() {
-        @Override
-        public void onRecipeClicked(String id) {
-            startActivity(new Intent(RecipeDetailsActivity.this, RecipeDetailsActivity.class)
-            .putExtra("id", id));
-        }
-    };
+    private final RecipeClickListener recipeClickListener = id -> startActivity(new Intent(RecipeDetailsActivity.this, RecipeDetailsActivity.class)
+    .putExtra("id", id));
 
     private final InstructionsListener instructionsListener = new InstructionsListener() {
 
