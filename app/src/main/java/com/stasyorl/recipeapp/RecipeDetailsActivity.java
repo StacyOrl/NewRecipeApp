@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.tv.TvContract;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -32,7 +33,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     int id;
     TextView textView_meal_name, textView_meal_source, textView_meal_summory;
-    ImageView imageView_meal_image;
+    ImageView imageView_meal_image, imageView_plus_description, imageView_plus_instructions, imageView_minus_description, imageView_minus_instruction;
     RecyclerView recycler_meal_ingredients, recycler_meal_similar, recycler_meal_instructions;
     InstructionsAdapter instructionsAdapter;
 
@@ -70,6 +71,11 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         recycler_meal_ingredients = findViewById(R.id.recycler_meal_ingredients);
         recycler_meal_similar = findViewById(R.id.recycler_meal_similar);
         recycler_meal_instructions = findViewById(R.id.recycler_meal_instructions);
+
+        imageView_plus_description = findViewById(R.id.imageView_plus_description);
+        imageView_plus_instructions = findViewById(R.id.imageView_plus_instructions);
+        imageView_minus_description = findViewById(R.id.imageView_minus_description);
+        imageView_minus_instruction = findViewById(R.id.imageView_minus_instruction);
     }
 
     private final RecipeDetailsListener recipeDetailsListener = new RecipeDetailsListener() {
@@ -78,8 +84,17 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             dialog.dismiss();
             textView_meal_name.setText(response.title);
             textView_meal_source.setText(response.sourceName);
-            textView_meal_summory.setText(response.summary);
+
+            if (textView_meal_source.getText() == ""){
+                textView_meal_source.setText(R.string.unknown_source);
+            }
+
+            textView_meal_summory.setText(response.summary.replace("<b>", "").replace("</b>", ""));
             Picasso.get().load(response.image).into(imageView_meal_image);
+
+            if (imageView_meal_image.getDrawable() == null){
+                Picasso.get().load("https://i1.sndcdn.com/avatars-KyA2jTtE1Ngxjv82-RH3FVw-t500x500.jpg").into(imageView_meal_image);
+            }
 
             //layout manager for the ingredients recyclerView
             recycler_meal_ingredients.setHasFixedSize(true);
@@ -87,6 +102,24 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             //setting adapter
             ingredientsAdapter = new IngredientsAdapter(RecipeDetailsActivity.this, response.extendedIngredients);
             recycler_meal_ingredients.setAdapter(ingredientsAdapter);
+
+            imageView_plus_instructions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    recycler_meal_instructions.setVisibility(View.VISIBLE);
+                    imageView_minus_instruction.setVisibility(View.VISIBLE);
+                    imageView_plus_instructions.setVisibility(View.GONE);
+                }
+            });
+
+            imageView_minus_instruction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    recycler_meal_instructions.setVisibility(View.GONE);
+                    imageView_plus_instructions.setVisibility(View.VISIBLE);
+                    imageView_minus_instruction.setVisibility(View.GONE);
+                }
+            });
         }
 
 
@@ -129,6 +162,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             recycler_meal_instructions.setLayoutManager(new LinearLayoutManager(RecipeDetailsActivity.this, LinearLayoutManager.VERTICAL, false));
             instructionsAdapter = new InstructionsAdapter(RecipeDetailsActivity.this, response);
             recycler_meal_instructions.setAdapter(instructionsAdapter);
+            recycler_meal_instructions.setVisibility(View.GONE);
         }
 
         @Override

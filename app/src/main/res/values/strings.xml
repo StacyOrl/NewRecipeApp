@@ -22,4 +22,5 @@
     </string-array>
 
     <string name="message">"Sorry didn't work out"</string>
+    <string name="unknown_source">Unknown source</string>
 </resources>

@@ -28,7 +28,7 @@
             <TextView
                 android:id="@+id/textView_instructions_step_title"
                 android:text="Step name"
-                android:textStyle="italic"
+                android:textStyle="bold"
                 android:textSize="18sp"
                 android:textAlignment="textStart"
                 android:textColor="@color/dark_green"
@@ -48,8 +48,8 @@
                 android:text="Equipments"
                 android:textColor="@color/dark_pink"
                 android:textAlignment="textStart"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textStyle="italic"
                 android:padding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -70,8 +70,8 @@
                 android:text="Ingredients"
                 android:textColor="@color/dark_pink"
                 android:textAlignment="textStart"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textStyle="italic"
                 android:padding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
