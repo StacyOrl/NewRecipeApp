@@ -103,6 +103,24 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             ingredientsAdapter = new IngredientsAdapter(RecipeDetailsActivity.this, response.extendedIngredients);
             recycler_meal_ingredients.setAdapter(ingredientsAdapter);
 
+            imageView_plus_description.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    textView_meal_summory.setVisibility(View.VISIBLE);
+                    imageView_minus_description.setVisibility(View.VISIBLE);
+                    imageView_plus_description.setVisibility(View.GONE);
+                }
+            });
+
+            imageView_minus_description.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    textView_meal_summory.setVisibility(View.GONE);
+                    imageView_plus_description.setVisibility(View.VISIBLE);
+                    imageView_minus_description.setVisibility(View.GONE);
+                }
+            });
+
             imageView_plus_instructions.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -120,6 +138,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                     imageView_minus_instruction.setVisibility(View.GONE);
                 }
             });
+
+
         }
 
 
