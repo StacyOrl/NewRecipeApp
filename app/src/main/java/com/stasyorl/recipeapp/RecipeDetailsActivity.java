@@ -86,11 +86,16 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 textView_meal_source.setText(R.string.unknown_source);
             }
 
-            textView_meal_summory.setText(response.summary.replace("<b>", "").replace("</b>", ""));
+            textView_meal_summory.setText(response.summary.replace("<b>", "").
+                    replace("</b>", "").
+                    replace("<a", "").
+                    replace(">", "").
+                    replace("href=", "").
+                    replace("</a", ""));
             Picasso.get().load(response.image).into(imageView_meal_image);
 
             if (imageView_meal_image.getDrawable() == null){
-                Picasso.get().load("https://i1.sndcdn.com/avatars-KyA2jTtE1Ngxjv82-RH3FVw-t500x500.jpg").into(imageView_meal_image);
+                imageView_meal_image.setImageResource(R.mipmap.ic_no_photo_foreground);
             }
 
             //layout manager for the ingredients recyclerView

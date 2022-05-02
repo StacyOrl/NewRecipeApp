@@ -49,9 +49,11 @@
 
    <androidx.cardview.widget.CardView
       app:cardElevation="8dp"
-      app:cardBackgroundColor="@color/light_yellow"
+      app:cardBackgroundColor="@color/grey_bg"
        android:layout_width="match_parent"
-       android:layout_height="?attr/actionBarSize">
+       android:layout_height="?attr/actionBarSize"
+       android:layout_margin="8dp"
+       app:cardCornerRadius="10dp">
 
       <androidx.appcompat.widget.SearchView
           android:id="@+id/searchView_home"
