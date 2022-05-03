@@ -49,7 +49,7 @@
 
    <androidx.cardview.widget.CardView
       app:cardElevation="8dp"
-      app:cardBackgroundColor="@color/grey_bg"
+      app:cardBackgroundColor="@color/white"
        android:layout_width="match_parent"
        android:layout_height="?attr/actionBarSize"
        android:layout_margin="8dp"
@@ -64,6 +64,8 @@
 
           app:searchIcon="@drawable/ic_search" />
    </androidx.cardview.widget.CardView>
+
+
 
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/recycler_random"
