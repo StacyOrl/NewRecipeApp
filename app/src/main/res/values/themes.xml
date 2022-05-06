@@ -20,4 +20,9 @@
         <item name="android:windowFullscreen">true</item>
 
     </style>
+
+    <style name="MaterialButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/btn_selector</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>
