@@ -16,7 +16,9 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.stasyorl.recipeapp.Adapters.CategoryAdapter;
 import com.stasyorl.recipeapp.Adapters.RandomRecipeAdapter;
+import com.stasyorl.recipeapp.Listeners.CategoryListener;
 import com.stasyorl.recipeapp.Listeners.RandomRecipeResponseListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.Models.RandomRecipeApiResponse;
@@ -31,11 +33,14 @@ public class MainActivity extends AppCompatActivity {
     Spinner spinner;
     List<String> tags = new ArrayList<>();
 
+    String[] categoryArray;
+
     ProgressDialog dialog;
     RequestManager manager;
     RandomRecipeAdapter randomRecipeAdapter;
+    CategoryAdapter categoryAdapter;
     RecyclerView recyclerView, recycle_category;
-    String [] category_array;
+
 
 
     @Override
@@ -63,18 +68,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        spinner = findViewById(R.id.spinner_tags);
-        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.tags,
-                R.layout.spinner_text);
-        arrayAdapter.setDropDownViewResource(R.layout.spinner_inner_text);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(spinnerSelectedListener);
-
-        manager = new RequestManager(this);
+//        spinner = findViewById(R.id.spinner_tags);
+//        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(
+//                this,
+//                R.array.tags,
+//                R.layout.spinner_text);
+//        arrayAdapter.setDropDownViewResource(R.layout.spinner_inner_text);
+//        spinner.setAdapter(arrayAdapter);
+//        spinner.setOnItemSelectedListener(spinnerSelectedListener);
+//
+//        manager = new RequestManager(this);
 ////        manager.getRandomRecipes(randomRecipeResponseListener);
 ////        dialog.show();
+
+        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
+        recycle_category = findViewById(R.id.category_recycler);
+        recycle_category.setHasFixedSize(true);
+        recycle_category.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        categoryAdapter = new CategoryAdapter(MainActivity.this, categoryArray);
+        recycle_category.setAdapter(categoryAdapter);
 
 
 
@@ -124,5 +136,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+//    private final CategoryListener categoryListener = new CategoryListener() {
+//        @Override
+//        public void onCategoryClicked(View view, int position) {
+//            tags.clear();
+//            tags.add(view..toString());
+//            manager.getRandomRecipes(randomRecipeResponseListener, tags);
+//            dialog.show();
+//        }
+//    };
 
 }
