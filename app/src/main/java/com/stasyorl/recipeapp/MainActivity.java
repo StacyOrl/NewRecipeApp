@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener 
 
     SearchView searchView;
 
-    Spinner spinner;
     List<String> tags = new ArrayList<>();
 
     String[] categoryArray;
@@ -68,18 +67,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener 
         });
 
 
-//        spinner = findViewById(R.id.spinner_tags);
-//        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(
-//                this,
-//                R.array.tags,
-//                R.layout.spinner_text);
-//        arrayAdapter.setDropDownViewResource(R.layout.spinner_inner_text);
-//        spinner.setAdapter(arrayAdapter);
-//        spinner.setOnItemSelectedListener(spinnerSelectedListener);
-
+//
         manager = new RequestManager(this);
-//        manager.getRandomRecipes(randomRecipeResponseListener);
-//        dialog.show();
 
         categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
         recycle_category = findViewById(R.id.category_recycler);
@@ -123,22 +112,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener 
         return models;
     }
 
-    private final AdapterView.OnItemSelectedListener spinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            tags.clear();
-            tags.add(adapterView.getSelectedItem().toString());
-            manager.getRandomRecipes(randomRecipeResponseListener, tags);
-            dialog.show();
-
-
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
 
     private final RecipeClickListener recipeClickListener = new RecipeClickListener() {
         @Override
@@ -157,14 +130,5 @@ public class MainActivity extends AppCompatActivity implements CategoryListener 
         dialog.show();
     }
 
-//    private final CategoryListener categoryListener = new CategoryListener() {
-//        @Override
-//        public void onCategoryClicked(View view, int position) {
-//            tags.clear();
-//            tags.add(view..toString());
-//            manager.getRandomRecipes(randomRecipeResponseListener, tags);
-//            dialog.show();
-//        }
-//    };
 
 }

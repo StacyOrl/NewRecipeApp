@@ -1,6 +1,8 @@
 package com.stasyorl.recipeapp.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,13 +39,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
         return new CategoryViewHolder(LayoutInflater.from(context).inflate(R.layout.category_item, parent, false));
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         holder.txt.setText(categories.get(position).getName());
        if(categories.get(position).isChecked()){
            holder.category_item.setCardBackgroundColor(ContextCompat.getColor(context, R.color.dark_green));
+           holder.txt.setHintTextColor(R.color.white);
        }else {
            holder.category_item.setCardBackgroundColor(ContextCompat.getColor(context, R.color.grey_bg));
+           holder.txt.setHintTextColor(R.color.black);
        }
         holder.category_item.setOnClickListener(view -> {
 
