@@ -8,15 +8,11 @@
     android:background="@color/light_pink"
     tools:context=".RecipeDetailsActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        app:title="Details"
-        app:titleTextColor="@color/dark_green"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"/>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:orientation="vertical"
@@ -97,10 +93,13 @@
                     app:srcCompat="@mipmap/ic_hide_text"
                     android:visibility="gone"/>
 
+
+
             </LinearLayout>
 
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_text_animation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/white"
@@ -118,7 +117,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </androidx.cardview.widget.CardView>
-
 
 
             <LinearLayout

@@ -1,6 +1,7 @@
 package com.stasyorl.recipeapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,6 +9,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +36,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     ImageView imageView_meal_image, imageView_plus_description, imageView_plus_instructions, imageView_minus_description, imageView_minus_instruction;
     RecyclerView recycler_meal_ingredients, recycler_meal_similar, recycler_meal_instructions;
     InstructionsAdapter instructionsAdapter;
+    CardView cardView_text_animation;
 
     RequestManager manager;
     ProgressDialog dialog;
@@ -40,6 +44,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     IngredientsAdapter ingredientsAdapter;
 
     SimilarRecipeAdapter similarRecipeAdapter;
+    Animation intro_animation, outro_animation;
 
 
     @Override
@@ -73,6 +78,11 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         imageView_plus_instructions = findViewById(R.id.imageView_plus_instructions);
         imageView_minus_description = findViewById(R.id.imageView_minus_description);
         imageView_minus_instruction = findViewById(R.id.imageView_minus_instruction);
+
+        intro_animation = AnimationUtils.loadAnimation(this, R.anim.intro_transition);
+        outro_animation = AnimationUtils.loadAnimation(this, R.anim.outro_transition);
+        cardView_text_animation = findViewById(R.id.cardView_text_animation);
+
     }
 
     private final RecipeDetailsListener recipeDetailsListener = new RecipeDetailsListener() {
@@ -107,12 +117,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
             imageView_plus_description.setOnClickListener(view -> {
                 textView_meal_summory.setVisibility(View.VISIBLE);
+                cardView_text_animation.startAnimation(intro_animation);
                 imageView_minus_description.setVisibility(View.VISIBLE);
                 imageView_plus_description.setVisibility(View.GONE);
             });
 
             imageView_minus_description.setOnClickListener(view -> {
                 textView_meal_summory.setVisibility(View.GONE);
+                cardView_text_animation.startAnimation(outro_animation);
                 imageView_plus_description.setVisibility(View.VISIBLE);
                 imageView_minus_description.setVisibility(View.GONE);
             });

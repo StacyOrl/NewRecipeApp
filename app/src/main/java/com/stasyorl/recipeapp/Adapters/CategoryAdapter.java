@@ -45,10 +45,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
         holder.txt.setText(categories.get(position).getName());
        if(categories.get(position).isChecked()){
            holder.category_item.setCardBackgroundColor(ContextCompat.getColor(context, R.color.dark_green));
-           holder.txt.setHintTextColor(R.color.white);
+           holder.txt.setTextColor(ContextCompat.getColor(context, R.color.white));
+
        }else {
            holder.category_item.setCardBackgroundColor(ContextCompat.getColor(context, R.color.grey_bg));
-           holder.txt.setHintTextColor(R.color.black);
+           holder.txt.setTextColor(R.color.black);
        }
         holder.category_item.setOnClickListener(view -> {
 
@@ -56,6 +57,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
             uncheckedAnother(position);
             notifyDataSetChanged();
             itemListener.onCategoryClicked(position);
+
         });
     }
 
