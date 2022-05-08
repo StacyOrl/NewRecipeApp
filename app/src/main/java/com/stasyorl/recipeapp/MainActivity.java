@@ -1,5 +1,6 @@
 package com.stasyorl.recipeapp;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener 
     RandomRecipeAdapter randomRecipeAdapter;
     CategoryAdapter categoryAdapter;
     RecyclerView recyclerView, recycle_category;
+
 
 
 
@@ -116,8 +118,13 @@ public class MainActivity extends AppCompatActivity implements CategoryListener 
     private final RecipeClickListener recipeClickListener = new RecipeClickListener() {
         @Override
         public void onRecipeClicked(String id) {
-            startActivity(new Intent(MainActivity.this, RecipeDetailsActivity.class)
-            .putExtra("id", id));
+
+            Intent intent = new Intent(MainActivity.this, RecipeDetailsActivity.class);
+            intent.putExtra("id", id);
+
+            startActivity(intent);
+
+
 
         }
     };

@@ -1,6 +1,9 @@
 package com.stasyorl.recipeapp.Adapters;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +25,17 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
     Context context;
     List<Recipe> list;
     RecipeClickListener listener;
+//    ActivityOptions options;
 
     public RandomRecipeAdapter(Context context, List<Recipe> list, RecipeClickListener listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
     }
+//
+//    public ActivityOptions getOptions() {
+//        return options;
+//    }
 
     @NonNull
     @Override
@@ -44,10 +52,16 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
         holder.textView_time.setText(list.get(position).readyInMinutes+" Minutes");
         Picasso.get().load(list.get(position).image).into(holder.imageView_food);
 
+//        options = ActivityOptions.makeSceneTransitionAnimation(
+//                (Activity)context, new Pair<View, String>(holder.imageView_food, "animImage"));
+
         holder.random_list_container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onRecipeClicked(String.valueOf(list.get(holder.getAdapterPosition()).id));
+
+
+//                context.startActivity(intent, options.toBundle());
             }
         });
 
