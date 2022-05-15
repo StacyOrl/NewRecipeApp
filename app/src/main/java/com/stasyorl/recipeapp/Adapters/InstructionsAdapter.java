@@ -34,6 +34,9 @@ public class InstructionsAdapter extends RecyclerView.Adapter<InstructionsViewHo
     @Override
     public void onBindViewHolder(@NonNull InstructionsViewHolder holder, int position) {
         holder.textView_instruction_name.setText(list.get(position).name);
+        if(holder.textView_instruction_name.getText() == null){
+            holder.textView_instruction_name.setVisibility(View.GONE);
+        }
         holder.recycler_instruction_steps.setHasFixedSize(true);
 
         holder.recycler_instruction_steps.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
