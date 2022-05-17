@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.stasyorl.recipeapp.Adapters.CategoryAdapter;
 import com.stasyorl.recipeapp.Adapters.RandomRecipeAdapter;
+import com.stasyorl.recipeapp.Fragments.UserLoginFragment;
 import com.stasyorl.recipeapp.Fragments.UserRegistrationFragment;
 import com.stasyorl.recipeapp.Listeners.CategoryListener;
 import com.stasyorl.recipeapp.Listeners.RandomRecipeResponseListener;
@@ -30,7 +31,7 @@ import com.stasyorl.recipeapp.Models.RandomRecipeApiResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CategoryListener {
+public class MainActivity extends AppCompatActivity implements CategoryListener{
 
     SearchView searchView;
 
@@ -50,15 +51,19 @@ public class MainActivity extends AppCompatActivity implements CategoryListener 
 
     InternetConnectorReceiver receiver;
 
-    Fragment fragment, categoryFragment;
+    UserRegistrationFragment registrationFragment;
+    Fragment loginFragment;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
 
+    public LinearLayout getMainScreen() {
+        return mainScreen;
+    }
 
-
-
-
+    public FrameLayout getFragmentContainer() {
+        return fragmentContainer;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,23 +72,35 @@ public class MainActivity extends AppCompatActivity implements CategoryListener 
 
 
 
+
+
 //        receiver = new InternetConnectorReceiver(MainActivity.this);
 //        registerReceiver(receiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 //        no_wifi_image = findViewById(R.id.no_wifi_image);
 
-        fragment = new UserRegistrationFragment();
+        registrationFragment = new UserRegistrationFragment();
+        loginFragment = new UserLoginFragment();
         fragmentContainer = findViewById(R.id.fragmentContainer);
         mainScreen = findViewById(R.id.main_screen);
         imageView_user_pic = findViewById(R.id.imageView_user_pic);
         imageView_user_pic.setOnClickListener(view -> {
             Toast.makeText(MainActivity.this, "KLAPPT", Toast.LENGTH_SHORT).show();
-                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, fragment).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
                 mainScreen.setVisibility(View.GONE);
                 fragmentContainer.setVisibility(View.VISIBLE);
-
-
-
         });
+        if(registrationFragment.isPressed()){
+                getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, loginFragment).commit();
+        }
+
+//        OnBackButtonListener backListener = (OnBackButtonListener) fragment;
+//        boolean actionResult = backListener.onBackPressed();
+//
+//        if (actionResult) {
+//            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+//        }
+//
+//        super.onBackPressed();
 
 
 
