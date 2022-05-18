@@ -89,9 +89,9 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                 mainScreen.setVisibility(View.GONE);
                 fragmentContainer.setVisibility(View.VISIBLE);
         });
-        if(registrationFragment.isPressed()){
-                getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, loginFragment).commit();
-        }
+//        if(registrationFragment.isPressed()){
+//                getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, loginFragment).commit();
+//        }
 
 //        OnBackButtonListener backListener = (OnBackButtonListener) fragment;
 //        boolean actionResult = backListener.onBackPressed();
