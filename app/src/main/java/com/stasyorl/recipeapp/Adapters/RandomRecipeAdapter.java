@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.Models.Recipe;
@@ -51,6 +53,9 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
         holder.textView_servings.setText(list.get(position).servings+" Servings");
         holder.textView_time.setText(list.get(position).readyInMinutes+" Minutes");
         Picasso.get().load(list.get(position).image).into(holder.imageView_food);
+        if (holder.imageView_food.getDrawable() == null){
+            holder.imageView_food.setImageResource(R.mipmap.ic_no_photo_foreground);
+        }
 
 //        options = ActivityOptions.makeSceneTransitionAnimation(
 //                (Activity)context, new Pair<View, String>(holder.imageView_food, "animImage"));
@@ -76,7 +81,10 @@ class RandomRecipeViewHolder extends RecyclerView.ViewHolder {
 
     CardView random_list_container;
     TextView textView_title, textView_servings, textView_likes, textView_time;
-    ImageView imageView_food;
+    ImageView imageView_food, fvrt_button;
+
+    DatabaseReference favouriteDR;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public RandomRecipeViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -86,6 +94,7 @@ class RandomRecipeViewHolder extends RecyclerView.ViewHolder {
         textView_likes = itemView.findViewById(R.id.textView_likes);
         textView_time = itemView.findViewById(R.id.textView_time);
         imageView_food = itemView.findViewById(R.id.imageView_food);
+        fvrt_button = itemView.findViewById(R.id.fvrt_button);
 
 
 

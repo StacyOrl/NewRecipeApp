@@ -52,9 +52,10 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     InternetConnectorReceiver receiver;
 
     UserRegistrationFragment registrationFragment;
-    Fragment loginFragment;
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
+    UserLoginFragment loginFragment;
+
+
+
 
 
     public LinearLayout getMainScreen() {
@@ -89,18 +90,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                 mainScreen.setVisibility(View.GONE);
                 fragmentContainer.setVisibility(View.VISIBLE);
         });
-//        if(registrationFragment.isPressed()){
-//                getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, loginFragment).commit();
-//        }
 
-//        OnBackButtonListener backListener = (OnBackButtonListener) fragment;
-//        boolean actionResult = backListener.onBackPressed();
-//
-//        if (actionResult) {
-//            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-//        }
-//
-//        super.onBackPressed();
 
 
 
