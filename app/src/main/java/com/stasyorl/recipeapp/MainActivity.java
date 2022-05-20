@@ -18,6 +18,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.stasyorl.recipeapp.Adapters.CategoryAdapter;
 import com.stasyorl.recipeapp.Adapters.RandomRecipeAdapter;
 import com.stasyorl.recipeapp.Fragments.UserLoginFragment;
@@ -27,6 +31,7 @@ import com.stasyorl.recipeapp.Listeners.RandomRecipeResponseListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.Models.CategoryModel;
 import com.stasyorl.recipeapp.Models.RandomRecipeApiResponse;
+import com.stasyorl.recipeapp.Models.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +59,11 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     UserRegistrationFragment registrationFragment;
     UserLoginFragment loginFragment;
 
-
-
-
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference favDatabaseReference, fvrt_listRef;
+    Boolean favChecked = false;
+    Recipe recipe;
+    FirebaseUser user;
 
     public LinearLayout getMainScreen() {
         return mainScreen;
@@ -73,8 +80,11 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
 
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        String currentUserId = user.getUid();
 
-
+        favDatabaseReference = database.getReference("favourites");
+        fvrt_listRef = database.getReference("favouriteList").child(currentUserId);
 //        receiver = new InternetConnectorReceiver(MainActivity.this);
 //        registerReceiver(receiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 //        no_wifi_image = findViewById(R.id.no_wifi_image);
