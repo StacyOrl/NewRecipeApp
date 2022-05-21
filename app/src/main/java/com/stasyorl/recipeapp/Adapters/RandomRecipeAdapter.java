@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+import com.stasyorl.recipeapp.Listeners.AddToFavListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.Models.Recipe;
 import com.stasyorl.recipeapp.R;
@@ -27,17 +28,15 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
     Context context;
     List<Recipe> list;
     RecipeClickListener listener;
+    AddToFavListener favListener;
 //    ActivityOptions options;
 
-    public RandomRecipeAdapter(Context context, List<Recipe> list, RecipeClickListener listener) {
+    public RandomRecipeAdapter(Context context, List<Recipe> list, RecipeClickListener listener, AddToFavListener favListener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
+        this.favListener = favListener;
     }
-//
-//    public ActivityOptions getOptions() {
-//        return options;
-//    }
 
     @NonNull
     @Override
@@ -70,6 +69,16 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
             }
         });
 
+        holder.fvrt_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                favListener.onButtonClicked(holder.textView_title.getText(),
+                        holder.textView_likes.getText(), holder.textView_servings.getText(),
+                        holder.textView_time.getText(), list.get(position).image,
+                        String.valueOf(list.get(holder.getAdapterPosition()).id));
+            }
+        });
+
     }
 
     @Override
@@ -81,10 +90,9 @@ class RandomRecipeViewHolder extends RecyclerView.ViewHolder {
 
     CardView random_list_container;
     TextView textView_title, textView_servings, textView_likes, textView_time;
-    ImageView imageView_food, fvrt_button;
+    ImageView imageView_food;
+    CardView fvrt_button;
 
-    DatabaseReference favouriteDR;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public RandomRecipeViewHolder(@NonNull View itemView) {
         super(itemView);

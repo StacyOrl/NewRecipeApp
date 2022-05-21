@@ -118,21 +118,17 @@ public class UserLoginFragment extends Fragment {
 
         if (registerEmail.isEmpty() || loginPassword.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            login_password.setError("Enter proper password");
         } else {
 
             if (!registerEmail.matches(emailPattern)) {
                 login_email.setError("Enter correct email");
-            } else if (registerEmail.isEmpty() || loginPassword.isEmpty()) {
-                Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
-                login_password.setError("Enter proper password");
-            } else {
-                mAuth.signInWithEmailAndPassword(registerEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(getContext(), "SUCCESSFUL", Toast.LENGTH_SHORT).show();
-                            closeWindow(UserLoginFragment.this);
-                        }
+            }else {
+                mAuth.signInWithEmailAndPassword(registerEmail, loginPassword).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Toast.makeText(getContext(), "SIGNED IN SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+                        closeWindow(UserLoginFragment.this);
+
                     }
                 });
             }

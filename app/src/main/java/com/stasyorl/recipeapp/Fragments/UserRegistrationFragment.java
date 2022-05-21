@@ -142,17 +142,14 @@ public class UserRegistrationFragment extends Fragment{
         }else if(!registerPassword.equals(confirmPassword)){
             Toast.makeText(getContext(), "Passwords are not matching", Toast.LENGTH_SHORT).show();
         }else{
-            mAuth.createUserWithEmailAndPassword(registerEmail, registerPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
-                        Toast.makeText(getContext(), "SUCCESSFUL", Toast.LENGTH_SHORT).show();
-                        closeWindow(UserRegistrationFragment.this);
-                    }else{
-                        String exception = task.getException().toString();
-                        exception = exception.substring(0, exception.indexOf(':'));
-                        Toast.makeText(getContext(), exception, Toast.LENGTH_SHORT).show();
-                    }
+            mAuth.createUserWithEmailAndPassword(registerEmail, registerPassword).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+                    closeWindow(UserRegistrationFragment.this);
+                }else{
+                    String exception = task.getException().toString();
+                    exception = exception.substring(0, exception.indexOf(':'));
+                    Toast.makeText(getContext(), exception, Toast.LENGTH_SHORT).show();
                 }
             });
         }
