@@ -26,9 +26,10 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<Recipe, Favourite
      * @param options
      */
     public FavouritesAdapter(@NonNull FirebaseRecyclerOptions<Recipe> options) {
+
+
         super(options);
     }
-
     @Override
     protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull Recipe model) {
         holder.textView_title.setText(model.getTitle());

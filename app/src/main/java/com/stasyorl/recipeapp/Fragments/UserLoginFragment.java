@@ -27,6 +27,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.R;
+import com.stasyorl.recipeapp.UsersList;
+
+import java.util.ArrayList;
 
 public class UserLoginFragment extends Fragment {
 
@@ -42,10 +45,13 @@ public class UserLoginFragment extends Fragment {
 
     FirebaseAuth mAuth;
     FirebaseUser mUser;
+    public ArrayList<String> users = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+
 
         View view = inflater.inflate(R.layout.fragment_user_login, container, false);
 
@@ -61,6 +67,9 @@ public class UserLoginFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+
+
+
 
         txt_sign_up.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +136,7 @@ public class UserLoginFragment extends Fragment {
                 mAuth.signInWithEmailAndPassword(registerEmail, loginPassword).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
                         Toast.makeText(getContext(), "SIGNED IN SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+                        UsersList.users.add(mUser.getUid());
                         closeWindow(UserLoginFragment.this);
 
                     }

@@ -29,6 +29,7 @@ import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Listeners.OnBackButtonListener;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.R;
+import com.stasyorl.recipeapp.UsersList;
 
 public class UserRegistrationFragment extends Fragment{
     EditText register_email, register_password, register_confirm_password;
@@ -64,8 +65,6 @@ public class UserRegistrationFragment extends Fragment{
 
 
         signUpBtn.setOnClickListener(view1 -> {
-            Toast.makeText(getContext(), "yeah", Toast.LENGTH_SHORT).show();
-
             PerforAuth();
             //REALTIME DATABASE
 //            final String registerEmail = register_email.getText().toString();
@@ -145,6 +144,7 @@ public class UserRegistrationFragment extends Fragment{
             mAuth.createUserWithEmailAndPassword(registerEmail, registerPassword).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+                    UsersList.users.add(mUser.getUid());
                     closeWindow(UserRegistrationFragment.this);
                 }else{
                     String exception = task.getException().toString();

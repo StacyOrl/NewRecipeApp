@@ -86,14 +86,14 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        String currentUserId = user.getUid();
-        favDatabaseReference = FirebaseDatabase.getInstance().getReference("favourites").child(currentUserId);
+
+        favDatabaseReference = FirebaseDatabase.getInstance().getReference("favourites");
 
 
         //FIREBASE TRYING
 
-//
+//user = FirebaseAuth.getInstance().getCurrentUser();
+//        String currentUserId = user.getUid();
 //        favDatabaseReference = database.getReference("favourites");
 //        fvrt_listRef = database.getReference("favouriteList").child(currentUserId);
 
@@ -170,15 +170,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
 
     }
-//
-//    public void addFragment(){
-//        fragment = new UserRegistrationFragment();
-//        fragmentManager = getFragmentManager();
-//        fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.fragmentContainer, fragment);
-//        fragmentTransaction.commit();
-//
-//    }
+
     public void changeUI(boolean isConnected) {
         // Change status according to boolean value
         MainActivity.this.runOnUiThread(() -> {
