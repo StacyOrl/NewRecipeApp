@@ -94,22 +94,22 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        registrationFragment = new UserRegistrationFragment();
-        loginFragment = new UserLoginFragment();
-        existingUserFragment = new ExistingUserFragment();
+//        registrationFragment = new UserRegistrationFragment();
+//        loginFragment = new UserLoginFragment();
+//        existingUserFragment = new ExistingUserFragment();
         fragmentContainer = findViewById(R.id.fragmentContainer);
         mainScreen = findViewById(R.id.main_screen);
         imageView_user_pic = findViewById(R.id.imageView_user_pic);
         favouritesFragment = new FavouritesFragment();
         favourite_button = findViewById(R.id.imageView_favourites);
-        emptyFavouriteFragment = new EmptyFavouriteFragment();
+//        emptyFavouriteFragment = new EmptyFavouriteFragment();
 
-        favDatabaseReference = FirebaseDatabase.getInstance().getReference("favourites");
+        favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
 
         //FIREBASE TRYING
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+//        user = FirebaseAuth.getInstance().getCurrentUser();
 //        if (user == null) {
 //            FirebaseAuth.getInstance().signInWithEmailAndPassword("baseuser@gmail.com", "123456").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 //                @Override
@@ -124,43 +124,31 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 //
 //        }
 
-        if(user == null){
-            imageView_user_pic = findViewById(R.id.imageView_user_pic);
 
-            imageView_user_pic.setOnClickListener(view -> {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-                    mainScreen.setVisibility(View.GONE);
-                    fragmentContainer.setVisibility(View.VISIBLE);
-            });
+//            imageView_user_pic.setOnClickListener(view -> {
+//
+//                if(user==null){
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//                }else{
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//                }
+//            });
+
             favourite_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
                     mainScreen.setVisibility(View.GONE);
                     fragmentContainer.setVisibility(View.VISIBLE);
                 }
             });
-        }
-
-        imageView_user_pic.setOnClickListener(view -> {
-
-            getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
-            mainScreen.setVisibility(View.GONE);
-            fragmentContainer.setVisibility(View.VISIBLE);
 
 
-        });
-
-        favourite_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
-                mainScreen.setVisibility(View.GONE);
-                fragmentContainer.setVisibility(View.VISIBLE);
-            }
-        });
-
-        dialog = new ProgressDialog(this);
+                    dialog = new ProgressDialog(this);
         dialog.setTitle("Loading...");
 
 
@@ -197,21 +185,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
 
 
-    }
-
-    public void changeUI(boolean isConnected) {
-        // Change status according to boolean value
-        MainActivity.this.runOnUiThread(() -> {
-            if (isConnected) {
-                Toast.makeText(MainActivity.this, "yes internet", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-
-            } else {
-                Toast.makeText(MainActivity.this, "no internet", Toast.LENGTH_SHORT).show();
-                no_wifi_image.setVisibility(View.VISIBLE);
-                dialog.dismiss();
-            }
-        });
     }
 
 
@@ -265,18 +238,18 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     private final AddToFavListener favListener = new AddToFavListener() {
         @Override
         public void onButtonClicked(CharSequence title, CharSequence likes, CharSequence serving, CharSequence time, String image, String id) {
-            favDatabaseReference.child("favourites").addListenerForSingleValueEvent(new ValueEventListener() {
+            favDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.hasChild(id)){
                         Toast.makeText(MainActivity.this, "This is already selected", Toast.LENGTH_SHORT).show();
                     }else{
-                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("title").setValue(title);
-                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("likes").setValue(likes);
-                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("serving").setValue(serving);
-                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("time").setValue(time);
-                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("image").setValue(image);
-                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("id").setValue(id);
+                        favDatabaseReference.child("SavedRecipes").child(id).child("title").setValue(title);
+                        favDatabaseReference.child("SavedRecipes").child(id).child("likes").setValue(likes);
+                        favDatabaseReference.child("SavedRecipes").child(id).child("serving").setValue(serving);
+                        favDatabaseReference.child("SavedRecipes").child(id).child("time").setValue(time);
+                        favDatabaseReference.child("SavedRecipes").child(id).child("image").setValue(image);
+                        favDatabaseReference.child("SavedRecipes").child(id).child("id").setValue(id);
                     }
                 }
 

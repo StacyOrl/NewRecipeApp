@@ -78,42 +78,24 @@ public class FavouritesFragment extends Fragment {
         noFavourites = view.findViewById(R.id.no_favourites);
         signOrLogin = view.findViewById(R.id.sign_or_login);
 
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
+//        mAuth = FirebaseAuth.getInstance();
+//        mUser = mAuth.getCurrentUser();
+//        String userId = mUser.getUid();
         favouriteRecycler = view.findViewById(R.id.favourites_list);
-        favDatabaseReference = database.getReference().child("favourites").child(mUser.getUid());
+        favDatabaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference("SavedRecipes");
 
-        query = FirebaseDatabase.getInstance().getReference().child("favourites").child(mUser.getUid()).child("SavedRecipes");
+        query = FirebaseDatabase.getInstance().getReference().child("SavedRecipes");
 
 
 
 
 
 
-        favDatabaseReference.addChildEventListener(new ChildEventListener() {
+        favDatabaseReference.child("SavedRecipes").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                setTotalSize((int)snapshot.getChildrenCount());
-
-//                if(noUser()){
-//                    noFavourites.setVisibility(View.VISIBLE);
-//                    favouriteRecycler.setVisibility(View.GONE);
-//
-//                    signUp.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();
-//                        }
-//                    });
-//                    logIn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, loginFragment).commit();
-//                        }
-//                    });
-//                }
-                if(getTotalSize()==0){
+                if((int)snapshot.getChildrenCount()==0){
 
                     favouriteRecycler.setVisibility(View.GONE);
                     noFavourites.setVisibility(View.VISIBLE);
@@ -254,13 +236,5 @@ public class FavouritesFragment extends Fragment {
         favouritesAdapter.stopListening();
     }
 
-    public boolean noUser(){
-        if(mUser.getUid()==null){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 
 }
