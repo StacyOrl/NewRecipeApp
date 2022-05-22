@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -26,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.stasyorl.recipeapp.Adapters.FavouritesAdapter;
-import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.Models.Recipe;
 import com.stasyorl.recipeapp.R;
 import com.stasyorl.recipeapp.UsersList;
@@ -51,9 +49,20 @@ public class FavouritesFragment extends Fragment {
 
 
     DatabaseReference databaseReference;
-    ArrayList<Long> favourites = new ArrayList<>();
-    long favouriteRecipe;
+    ArrayList<Object> favourites = new ArrayList<Object>();
+    int favouriteRecipe;
+    Query query;
 
+    int totalSize;
+
+
+    public int getTotalSize() {
+        return totalSize;
+    }
+
+    public void setTotalSize(int totalSize) {
+        this.totalSize = totalSize;
+    }
 
     @Nullable
     @Override
@@ -68,42 +77,25 @@ public class FavouritesFragment extends Fragment {
         noFavourites = view.findViewById(R.id.no_favourites);
         signOrLogin = view.findViewById(R.id.sign_or_login);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("favourites");
-
-
-
-        favouriteRecycler = view.findViewById(R.id.favourites_list);
-        favDatabaseReference = database.getReference().child("favourites");
-
-        favouriteRecycler.setLayoutManager(
-                new LinearLayoutManager(getContext()));
-
-        FirebaseRecyclerOptions<Recipe> options
-                = new FirebaseRecyclerOptions.Builder<Recipe>()
-                .setQuery(favDatabaseReference, Recipe.class)
-                .build();
-        favouritesAdapter = new FavouritesAdapter(options);
-        favouriteRecycler.setAdapter(favouritesAdapter);
-
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        favouriteRecycler = view.findViewById(R.id.favourites_list);
+        favDatabaseReference = database.getReference().child("favourites").child(mUser.getUid());
+        databaseReference = FirebaseDatabase.getInstance().getReference("SavedRecipes");
+
+        query = FirebaseDatabase.getInstance().getReference().child("favourites").child(mUser.getUid()).child("SavedRecipes");
+
+
+
+
+
+
+        favDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                favouriteRecipe = (long) snapshot.child(mUser.getUid()).child("favourites").getChildrenCount();
-            }
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                setTotalSize((int)snapshot.getChildrenCount());
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-
-
-
-        if(noUser()){
+                if(noUser()){
                     noFavourites.setVisibility(View.VISIBLE);
                     favouriteRecycler.setVisibility(View.GONE);
 
@@ -119,32 +111,92 @@ public class FavouritesFragment extends Fragment {
                             getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, loginFragment).commit();
                         }
                     });
-        }else if(favouriteRecipe==0){
+                }
+                if(getTotalSize()==0){
+
                     favouriteRecycler.setVisibility(View.GONE);
                     noFavourites.setVisibility(View.VISIBLE);
                     textExplain = view.findViewById(R.id.simpleText);
                     signOrLogin.setVisibility(View.INVISIBLE);
                     textExplain.setText("You haven't added your recipes yet");
-        }else if(favouriteRecipe>=1){
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.hasChild("favourites")){
-                        favouriteRecycler.setVisibility(View.VISIBLE);
-                        noFavourites.setVisibility(View.GONE);
-                        favouritesAdapter = new FavouritesAdapter(options);
-                        favouriteRecycler.setAdapter(favouritesAdapter);
-                    }
                 }
+//                else{
+//                    favDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                            if(snapshot.hasChild("Saved recipes")){
+//                            favouriteRecycler.setVisibility(View.VISIBLE);
+//                            noFavourites.setVisibility(View.GONE);
+//                            favouritesAdapter = new FavouritesAdapter(options);
+//                            favouriteRecycler.setAdapter(favouritesAdapter);
+//
+//                            onStart();
+//                    }
+//
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//                            Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    });
+//
+//                }
+//                favouriteRecipe = (int) snapshot.getChildrenCount();
+//                Toast.makeText(getContext(), String.valueOf(favouriteRecipe), Toast.LENGTH_SHORT).show();
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                }
-            });
+            }
 
-        }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        noFavourites.setVisibility(View.GONE);
+        favouriteRecycler.setVisibility(View.VISIBLE);
+        favouriteRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        FirebaseRecyclerOptions<Recipe> options
+                = new FirebaseRecyclerOptions.Builder<Recipe>()
+                .setQuery(query, Recipe.class)
+                .build();
+
+        favouritesAdapter = new FavouritesAdapter(options);
+        favouriteRecycler.setAdapter(favouritesAdapter);
+
+
+//        favDatabaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+////                favouriteRecipe = (long) snapshot.child(mUser.getUid()).child("Saved recipes").getChildrenCount();
+//                favouriteRecipe = (int) snapshot.getChildrenCount();
+//
+//                Toast.makeText(getContext(), String.valueOf(snapshot.child(mUser.getUid()).getValue()), Toast.LENGTH_LONG).show();
+//                }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+
+
 //        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -209,4 +261,5 @@ public class FavouritesFragment extends Fragment {
             return false;
         }
     }
+
 }

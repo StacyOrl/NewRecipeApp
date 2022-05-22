@@ -3,6 +3,9 @@ package com.stasyorl.recipeapp.Models;
 import java.util.ArrayList;
 
 public class Recipe {
+    public Recipe() {
+    }
+
     public boolean vegetarian;
     public boolean vegan;
     public boolean glutenFree;

@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
         //FIREBASE TRYING
 
-//user = FirebaseAuth.getInstance().getCurrentUser();
-//        String currentUserId = user.getUid();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        String currentUserId = user.getUid();
 //        favDatabaseReference = database.getReference("favourites");
 //        fvrt_listRef = database.getReference("favouriteList").child(currentUserId);
 
@@ -243,12 +243,12 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                     if(snapshot.hasChild(id)){
                         Toast.makeText(MainActivity.this, "This is already selected", Toast.LENGTH_SHORT).show();
                     }else{
-                        favDatabaseReference.child("favourites").child(id).child("title").setValue(title);
-                        favDatabaseReference.child("favourites").child(id).child("likes").setValue(likes);
-                        favDatabaseReference.child("favourites").child(id).child("serving").setValue(serving);
-                        favDatabaseReference.child("favourites").child(id).child("time").setValue(time);
-                        favDatabaseReference.child("favourites").child(id).child("image").setValue(image);
-                        favDatabaseReference.child("favourites").child(id).child("id").setValue(id);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("title").setValue(title);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("likes").setValue(likes);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("serving").setValue(serving);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("time").setValue(time);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("image").setValue(image);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("id").setValue(id);
                     }
                 }
 

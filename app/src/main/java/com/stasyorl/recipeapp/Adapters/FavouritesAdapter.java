@@ -39,6 +39,11 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<Recipe, Favourite
         holder.textView_time.setText(String.valueOf(model.getReadyInMinutes()));
         Picasso.get().load(model.getImage()).into(holder.imageView_food);
 
+        if (holder.imageView_food.getDrawable() == null){
+            holder.imageView_food.setImageResource(R.mipmap.ic_no_photo_foreground);
+        }
+
+
         holder.fav_image.setImageResource(R.drawable.ic_checked);
 
     }
