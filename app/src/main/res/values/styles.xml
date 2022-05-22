@@ -8,7 +8,7 @@
 
 
     <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">@font/maven_pro</item>
     </style>
 
 </resources>
