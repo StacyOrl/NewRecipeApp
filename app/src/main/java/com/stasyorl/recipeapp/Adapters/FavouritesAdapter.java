@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -13,12 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
+import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.Models.Recipe;
 import com.stasyorl.recipeapp.Models.RecipeFromFirebase;
 import com.stasyorl.recipeapp.R;
 
 public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebase, FavouritesAdapter.FavouritesViewHolder> {
-
+        RecipeClickListener listener;
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
@@ -27,7 +29,6 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebas
      * @param options
      */
     public FavouritesAdapter(@NonNull FirebaseRecyclerOptions<RecipeFromFirebase> options) {
-
 
         super(options);
     }
@@ -47,18 +48,28 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebas
 
         holder.fav_image.setImageResource(R.drawable.ic_checked);
 
+
+
+
     }
 
     @NonNull
     @Override
     public FavouritesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_random_recipe, parent, false);
+
+        new FavouritesViewHolder(view).setOnClickListener(new FavouritesViewHolder.ClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(parent.getContext(), "Item clicked at " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return new FavouritesAdapter.FavouritesViewHolder(view);
     }
-
-    public class FavouritesViewHolder extends RecyclerView.ViewHolder{
+// we changed static class
+    public static class FavouritesViewHolder extends RecyclerView.ViewHolder{
 
         CardView random_list_container;
         TextView textView_title, textView_servings, textView_likes, textView_time;
@@ -76,8 +87,27 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebas
             imageView_food = itemView.findViewById(R.id.imageView_food);
             fvrt_button = itemView.findViewById(R.id.fvrt_button);
             fav_image = itemView.findViewById(R.id.fav_image);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mClickListener.onItemClick(v, getAdapterPosition());
+
+                }
+            });
+        }
+        FavouritesViewHolder.ClickListener mClickListener;
+
+        //Interface to send callbacks...
+        public interface ClickListener{
+             void onItemClick(View view, int position);
+        }
+
+        public void setOnClickListener(FavouritesViewHolder.ClickListener clickListener){
+            mClickListener = clickListener;
         }
     }
+
 }
 
 

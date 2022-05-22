@@ -1,5 +1,6 @@
 package com.stasyorl.recipeapp.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +27,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.stasyorl.recipeapp.Adapters.FavouritesAdapter;
+import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.Models.Recipe;
 import com.stasyorl.recipeapp.Models.RecipeFromFirebase;
 import com.stasyorl.recipeapp.R;
+import com.stasyorl.recipeapp.RecipeDetailsActivity;
 import com.stasyorl.recipeapp.UsersList;
 
 import java.util.ArrayList;
@@ -72,6 +75,13 @@ public class FavouritesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favourites_fragment, container, false);
+
+        RecipeClickListener listener = new RecipeClickListener() {
+            @Override
+            public void onRecipeClicked(String id) {
+
+            }
+        };
 
         signUp = view.findViewById(R.id.sign_upText);
         logIn = view.findViewById(R.id.login_text);
@@ -152,6 +162,20 @@ public class FavouritesFragment extends Fragment {
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
+
+        final RecipeClickListener recipeClickListener = new RecipeClickListener() {
+            @Override
+            public void onRecipeClicked(String id) {
+
+                Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+                intent.putExtra("id", id);
+
+                startActivity(intent);
+
+
+
+            }
+        };
 
 //        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
 
