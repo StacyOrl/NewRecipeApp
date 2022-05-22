@@ -20,6 +20,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.stasyorl.recipeapp.Adapters.CategoryAdapter;
 import com.stasyorl.recipeapp.Adapters.RandomRecipeAdapter;
+import com.stasyorl.recipeapp.Fragments.EmptyFavouriteFragment;
+import com.stasyorl.recipeapp.Fragments.ExistingUserFragment;
 import com.stasyorl.recipeapp.Fragments.FavouritesFragment;
 import com.stasyorl.recipeapp.Fragments.UserLoginFragment;
 import com.stasyorl.recipeapp.Fragments.UserRegistrationFragment;
@@ -67,12 +72,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     UserRegistrationFragment registrationFragment;
     UserLoginFragment loginFragment;
     FavouritesFragment favouritesFragment;
+    ExistingUserFragment existingUserFragment;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference favDatabaseReference, fvrt_listRef;
     Boolean favChecked = false;
     Recipe recipe;
     FirebaseUser user;
+    EmptyFavouriteFragment emptyFavouriteFragment;
+
 
     public LinearLayout getMainScreen() {
         return mainScreen;
@@ -86,6 +94,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        registrationFragment = new UserRegistrationFragment();
+        loginFragment = new UserLoginFragment();
+        existingUserFragment = new ExistingUserFragment();
+        fragmentContainer = findViewById(R.id.fragmentContainer);
+        mainScreen = findViewById(R.id.main_screen);
+        imageView_user_pic = findViewById(R.id.imageView_user_pic);
+        favouritesFragment = new FavouritesFragment();
+        favourite_button = findViewById(R.id.imageView_favourites);
+        emptyFavouriteFragment = new EmptyFavouriteFragment();
 
         favDatabaseReference = FirebaseDatabase.getInstance().getReference("favourites");
 
@@ -93,29 +110,47 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         //FIREBASE TRYING
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        String currentUserId = user.getUid();
-//        favDatabaseReference = database.getReference("favourites");
-//        fvrt_listRef = database.getReference("favouriteList").child(currentUserId);
+//        if (user == null) {
+//            FirebaseAuth.getInstance().signInWithEmailAndPassword("baseuser@gmail.com", "123456").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                @Override
+//                public void onComplete(@NonNull Task<AuthResult> task) {
+//
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+////                    user = FirebaseAuth.getInstance().getCurrentUser();
+//                }
+//            });
+//
+//        }
 
+        if(user == null){
+            imageView_user_pic = findViewById(R.id.imageView_user_pic);
 
+            imageView_user_pic.setOnClickListener(view -> {
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+                    mainScreen.setVisibility(View.GONE);
+                    fragmentContainer.setVisibility(View.VISIBLE);
+            });
+            favourite_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
+                    mainScreen.setVisibility(View.GONE);
+                    fragmentContainer.setVisibility(View.VISIBLE);
+                }
+            });
+        }
 
-//        receiver = new InternetConnectorReceiver(MainActivity.this);
-//        registerReceiver(receiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-//        no_wifi_image = findViewById(R.id.no_wifi_image);
-
-        registrationFragment = new UserRegistrationFragment();
-        loginFragment = new UserLoginFragment();
-        fragmentContainer = findViewById(R.id.fragmentContainer);
-        mainScreen = findViewById(R.id.main_screen);
-        imageView_user_pic = findViewById(R.id.imageView_user_pic);
         imageView_user_pic.setOnClickListener(view -> {
-                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-                mainScreen.setVisibility(View.GONE);
-                fragmentContainer.setVisibility(View.VISIBLE);
+
+            getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
+            mainScreen.setVisibility(View.GONE);
+            fragmentContainer.setVisibility(View.VISIBLE);
+
+
         });
 
-        favouritesFragment = new FavouritesFragment();
-        favourite_button = findViewById(R.id.imageView_favourites);
         favourite_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,15 +160,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
             }
         });
 
-
-
-
-
-
         dialog = new ProgressDialog(this);
         dialog.setTitle("Loading...");
-
-        imageView_user_pic = findViewById(R.id.imageView_user_pic);
 
 
 

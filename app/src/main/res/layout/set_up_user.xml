@@ -34,62 +34,56 @@
 
         </androidx.cardview.widget.CardView>
 
-
-        <EditText
-            android:id="@+id/login_email"
-
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Your e-mail"
-            android:inputType="textEmailAddress"
-            android:textSize="17sp"
-
-            android:textAlignment="center"
-            android:layout_marginTop="15dp"/>
-
-        <EditText
-            android:id="@+id/login_password"
-
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Password"
-            android:textSize="17sp"
-            android:textAlignment="center"
-            android:layout_marginTop="10dp"
-            android:inputType="textPassword"/>
-
-        <Button
-            android:id="@+id/login_button"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign in"
-            android:backgroundTint="@color/dark_green"
-            android:layout_marginTop="20dp"/>
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/hi_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hi user! "
+                android:textAlignment="center"
+                android:layout_marginTop="10dp"
+                android:textSize="18dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="You are already registered!"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textSize="18dp"/>
+        </LinearLayout>
 
 
         <LinearLayout
-            android:layout_marginTop="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="20dp">
-            <TextView
+            android:layout_marginTop="10dp">
+            <Button
+                android:id="@+id/saved_recipes_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Do not have an account yet?"/>
-
-            <TextView
-                android:id="@+id/txt_sign_up"
+                android:text="Saved recipes"
+                android:backgroundTint="@color/dark_green"
+                android:textColor="@color/white" />
+            <Button
+                android:id="@+id/log_out_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign up"
-                android:layout_marginStart="7dp"
-                android:textColor="@color/dark_green"/>
-
+                android:text="Log out"
+                android:backgroundTint="@color/grey_bg"
+                android:textColor="@color/black"
+                android:layout_marginStart="20dp"/>
 
         </LinearLayout>
+
+
+
+
+
 
 
 

@@ -95,23 +95,23 @@ public class FavouritesFragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 setTotalSize((int)snapshot.getChildrenCount());
 
-                if(noUser()){
-                    noFavourites.setVisibility(View.VISIBLE);
-                    favouriteRecycler.setVisibility(View.GONE);
-
-                    signUp.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();
-                        }
-                    });
-                    logIn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, loginFragment).commit();
-                        }
-                    });
-                }
+//                if(noUser()){
+//                    noFavourites.setVisibility(View.VISIBLE);
+//                    favouriteRecycler.setVisibility(View.GONE);
+//
+//                    signUp.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();
+//                        }
+//                    });
+//                    logIn.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, loginFragment).commit();
+//                        }
+//                    });
+//                }
                 if(getTotalSize()==0){
 
                     favouriteRecycler.setVisibility(View.GONE);
@@ -254,7 +254,7 @@ public class FavouritesFragment extends Fragment {
     }
 
     public boolean noUser(){
-        if(!UsersList.users.contains(mUser.getUid())){
+        if(mUser.getUid()==null){
             return true;
         }
         else{

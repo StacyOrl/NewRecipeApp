@@ -136,7 +136,6 @@ public class UserLoginFragment extends Fragment {
                 mAuth.signInWithEmailAndPassword(registerEmail, loginPassword).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
                         Toast.makeText(getContext(), "SIGNED IN SUCCESSFULLY", Toast.LENGTH_SHORT).show();
-                        UsersList.users.add(mUser.getUid());
                         closeWindow(UserLoginFragment.this);
 
                     }

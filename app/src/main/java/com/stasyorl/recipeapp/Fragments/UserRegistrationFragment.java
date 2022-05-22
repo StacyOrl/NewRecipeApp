@@ -32,7 +32,7 @@ import com.stasyorl.recipeapp.R;
 import com.stasyorl.recipeapp.UsersList;
 
 public class UserRegistrationFragment extends Fragment{
-    EditText register_email, register_password, register_confirm_password;
+    EditText register_name, register_email, register_password, register_confirm_password;
     TextView txt_sign_in;
     ImageView close_btn, imageView_user_pic;
     UserLoginFragment loginFragment;
@@ -52,6 +52,7 @@ public class UserRegistrationFragment extends Fragment{
         register_email = view.findViewById(R.id.register_email);
         register_password = view.findViewById(R.id.register_password);
         register_confirm_password = view.findViewById(R.id.register_confirm_password);
+        register_name = view.findViewById(R.id.register_name);
         txt_sign_in = view.findViewById(R.id.txt_sign_in);
         close_btn = view.findViewById(R.id.imageView_close);
         loginFragment = new UserLoginFragment();
@@ -132,6 +133,7 @@ public class UserRegistrationFragment extends Fragment{
         final String registerEmail = register_email.getText().toString();
         final String registerPassword = register_password.getText().toString();
         final String confirmPassword = register_confirm_password.getText().toString();
+        final String userName = register_name.getText().toString();
 
         if(!registerEmail.matches(emailPattern)){
             register_email.setError("Enter correct email");
@@ -145,6 +147,7 @@ public class UserRegistrationFragment extends Fragment{
                 if(task.isSuccessful()){
                     Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY", Toast.LENGTH_SHORT).show();
                     UsersList.users.add(mUser.getUid());
+                    databaseReference.child(mUser.getUid()).child("username").setValue(userName);
                     closeWindow(UserRegistrationFragment.this);
                 }else{
                     String exception = task.getException().toString();
