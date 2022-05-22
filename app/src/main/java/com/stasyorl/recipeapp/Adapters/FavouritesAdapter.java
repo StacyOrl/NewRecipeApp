@@ -14,9 +14,10 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Models.Recipe;
+import com.stasyorl.recipeapp.Models.RecipeFromFirebase;
 import com.stasyorl.recipeapp.R;
 
-public class FavouritesAdapter extends FirebaseRecyclerAdapter<Recipe, FavouritesAdapter.FavouritesViewHolder> {
+public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebase, FavouritesAdapter.FavouritesViewHolder> {
 
 
     /**
@@ -25,19 +26,19 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<Recipe, Favourite
      *
      * @param options
      */
-    public FavouritesAdapter(@NonNull FirebaseRecyclerOptions<Recipe> options) {
+    public FavouritesAdapter(@NonNull FirebaseRecyclerOptions<RecipeFromFirebase> options) {
 
 
         super(options);
     }
     @Override
-    protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull Recipe model) {
-        holder.textView_title.setText(model.getTitle());
+    protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull RecipeFromFirebase model) {
+        holder.textView_title.setText(model.getRecipeTitle());
         holder.textView_title.setSelected(true);
-        holder.textView_likes.setText(String.valueOf(model.getAggregateLikes()));
-        holder.textView_servings.setText(String.valueOf(model.getServings()));
-        holder.textView_time.setText(String.valueOf(model.getReadyInMinutes()));
-        Picasso.get().load(model.getImage()).into(holder.imageView_food);
+        holder.textView_likes.setText(model.getAggregateLikes());
+        holder.textView_servings.setText(model.getServings());
+        holder.textView_time.setText(model.getReadyInMinutes());
+        Picasso.get().load(model.getRecipeImage()).into(holder.imageView_food);
 
         if (holder.imageView_food.getDrawable() == null){
             holder.imageView_food.setImageResource(R.mipmap.ic_no_photo_foreground);

@@ -26,6 +26,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.stasyorl.recipeapp.Adapters.FavouritesAdapter;
 import com.stasyorl.recipeapp.Models.Recipe;
+import com.stasyorl.recipeapp.Models.RecipeFromFirebase;
 import com.stasyorl.recipeapp.R;
 import com.stasyorl.recipeapp.UsersList;
 
@@ -171,9 +172,9 @@ public class FavouritesFragment extends Fragment {
         noFavourites.setVisibility(View.GONE);
         favouriteRecycler.setVisibility(View.VISIBLE);
         favouriteRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        FirebaseRecyclerOptions<Recipe> options
-                = new FirebaseRecyclerOptions.Builder<Recipe>()
-                .setQuery(query, Recipe.class)
+        FirebaseRecyclerOptions<RecipeFromFirebase> options
+                = new FirebaseRecyclerOptions.Builder<RecipeFromFirebase>()
+                .setQuery(query, RecipeFromFirebase.class)
                 .build();
 
         favouritesAdapter = new FavouritesAdapter(options);
