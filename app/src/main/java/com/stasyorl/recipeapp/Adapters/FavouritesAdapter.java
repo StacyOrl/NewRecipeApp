@@ -33,12 +33,12 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebas
     }
     @Override
     protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull RecipeFromFirebase model) {
-        holder.textView_title.setText(model.getRecipeTitle());
+        holder.textView_title.setText(model.getTitle());
         holder.textView_title.setSelected(true);
-        holder.textView_likes.setText(model.getAggregateLikes());
-        holder.textView_servings.setText(model.getServings());
-        holder.textView_time.setText(model.getReadyInMinutes());
-        Picasso.get().load(model.getRecipeImage()).into(holder.imageView_food);
+        holder.textView_likes.setText(model.getLikes());
+        holder.textView_servings.setText(model.getServing());
+        holder.textView_time.setText(model.getTime());
+        Picasso.get().load(model.getImage()).into(holder.imageView_food);
 
         if (holder.imageView_food.getDrawable() == null){
             holder.imageView_food.setImageResource(R.mipmap.ic_no_photo_foreground);
