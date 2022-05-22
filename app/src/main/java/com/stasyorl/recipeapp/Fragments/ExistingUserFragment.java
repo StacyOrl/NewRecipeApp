@@ -41,11 +41,13 @@ public class ExistingUserFragment extends Fragment {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         registrationFragment = new UserRegistrationFragment();
+        //I WROTE IT LMAO
+        //AND I WROTE THIS LMAO
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
-//                hiUser.setText(name);
+                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
+                hiUser.setText("HI "+name);
             }
 
             @Override
