@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,7 +27,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Adapters.FavouritesAdapter;
+import com.stasyorl.recipeapp.FavouritesViewHolder;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.Models.Recipe;
@@ -56,20 +59,13 @@ public class FavouritesFragment extends Fragment {
 
 
     DatabaseReference databaseReference;
-    ArrayList<Object> favourites = new ArrayList<Object>();
-    int favouriteRecipe;
     Query query;
+
+    boolean favChecker = false;
+    RecipeFromFirebase recipeModel;
 
     int totalSize;
 
-
-    public int getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(int totalSize) {
-        this.totalSize = totalSize;
-    }
 
     @Nullable
     @Override
@@ -95,10 +91,13 @@ public class FavouritesFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         favouriteRecycler = view.findViewById(R.id.favourites_list);
-        favDatabaseReference = database.getReference().child("favourites").child(mUser.getUid());
+        favDatabaseReference = database.getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference("SavedRecipes");
 
-        query = FirebaseDatabase.getInstance().getReference().child("favourites").child(mUser.getUid()).child("SavedRecipes");
+        query = FirebaseDatabase.getInstance().getReference().child(mUser.getUid()).child("SavedRecipes");
+        recipeModel = new RecipeFromFirebase();
+
+        DatabaseReference favReference = FirebaseDatabase.getInstance().getReference();
 
 
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +113,7 @@ public class FavouritesFragment extends Fragment {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.hasChild("SavedRecipes")){
+                if(!snapshot.child(mUser.getUid()).hasChild("SavedRecipes")){
                     favouriteRecycler.setVisibility(View.GONE);
                     noFavourites.setVisibility(View.VISIBLE);
                     textExplain = view.findViewById(R.id.simpleText);
@@ -135,29 +134,117 @@ public class FavouritesFragment extends Fragment {
 
             }
         });
+
+
         favouriteRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         FirebaseRecyclerOptions<RecipeFromFirebase> options
                 = new FirebaseRecyclerOptions.Builder<RecipeFromFirebase>()
                 .setQuery(query, RecipeFromFirebase.class)
                 .build();
-        favouritesAdapter = new FavouritesAdapter(options);
-        favouriteRecycler.setAdapter(favouritesAdapter);
+
+        FirebaseRecyclerAdapter<RecipeFromFirebase, FavouritesViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<RecipeFromFirebase, FavouritesViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull RecipeFromFirebase model) {
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String currentUserId = user.getUid();
+
+                final String postKey = getRef(position).getKey();
+
+                holder.setItem(model.getTitle(), model.getLikes(), model.getServing(), model.getTime(), model.getImage());
+
+                String title = getItem(position).getTitle();
+                String likes = getItem(position).getLikes();
+                String servings = getItem(position).getServing();
+                String time = getItem(position).getTime();
+                String image = getItem(position).getImage();
+                String id = getItem(position).getId();
+
+
+
+                holder.favouriteChecker(id, currentUserId);
+                holder.fvrt_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        favChecker = true;
+                        favReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(favChecker){
+                                    if(snapshot.child(currentUserId).child("SavedRecipes").hasChild(id)){
+//                                        snapshot.child(id).getRef().removeValue();
+                                        delete(id, currentUserId);
+                                        favChecker = false;
+                                    }else{
+                                        favReference.child(currentUserId).child("SavedRecipes").setValue(true);
+                                        recipeModel.setTitle(title);
+                                        recipeModel.setTime(time);
+                                        recipeModel.setLikes(likes);
+                                        recipeModel.setServing(servings);
+                                        recipeModel.setId(id);
+                                        recipeModel.setImage(image);
+                                        favReference.child(currentUserId).child("SavedRecipes").setValue(recipeModel);
+                                        favChecker = false;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+            public FavouritesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_random_recipe, parent, false);
+                return new FavouritesViewHolder(view);
+            }
+        };
+        firebaseRecyclerAdapter.startListening();
+        favouriteRecycler.setAdapter(firebaseRecyclerAdapter);
 
         return view;
     }
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        favouritesAdapter.startListening();
-    }
 
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        favouritesAdapter.stopListening();
+    void delete(String id, String currentUserId){
+        Query query = favDatabaseReference.child(currentUserId).child(id).orderByChild("id").equalTo(id);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    dataSnapshot.getRef().removeValue();
+
+                    Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
+//    @Override
+//    public void onStart()
+//    {
+//        super.onStart();
+//        favouritesAdapter.startListening();
+//    }
+//
+//    @Override
+//    public void onStop()
+//    {
+//        super.onStop();
+//        favouritesAdapter.stopListening();
+//    }
     public void closeWindow(Fragment fragment) {
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);

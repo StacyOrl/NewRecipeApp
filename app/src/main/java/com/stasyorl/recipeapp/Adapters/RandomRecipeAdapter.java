@@ -76,6 +76,8 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
                         holder.textView_likes.getText(), holder.textView_servings.getText(),
                         holder.textView_time.getText(), list.get(position).image,
                         String.valueOf(list.get(holder.getAdapterPosition()).id));
+                holder.fav_image.setImageResource(R.drawable.ic_checked);
+
             }
         });
 
@@ -92,6 +94,7 @@ class RandomRecipeViewHolder extends RecyclerView.ViewHolder {
     TextView textView_title, textView_servings, textView_likes, textView_time;
     ImageView imageView_food;
     CardView fvrt_button;
+    ImageView fav_image;
 
 
     public RandomRecipeViewHolder(@NonNull View itemView) {
@@ -103,6 +106,7 @@ class RandomRecipeViewHolder extends RecyclerView.ViewHolder {
         textView_time = itemView.findViewById(R.id.textView_time);
         imageView_food = itemView.findViewById(R.id.imageView_food);
         fvrt_button = itemView.findViewById(R.id.fvrt_button);
+        fav_image = itemView.findViewById(R.id.fav_image);
 
 
 

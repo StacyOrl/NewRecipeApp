@@ -9,18 +9,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
+import com.stasyorl.recipeapp.Listeners.RemoveFromFavListener;
 import com.stasyorl.recipeapp.Models.Recipe;
 import com.stasyorl.recipeapp.Models.RecipeFromFirebase;
 import com.stasyorl.recipeapp.R;
 
 public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebase, FavouritesAdapter.FavouritesViewHolder> {
-        RecipeClickListener listener;
+    RecipeClickListener listener;
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
@@ -68,7 +70,7 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebas
 
         return new FavouritesAdapter.FavouritesViewHolder(view);
     }
-// we changed static class
+    // we changed static class
     public static class FavouritesViewHolder extends RecyclerView.ViewHolder{
 
         CardView random_list_container;
@@ -100,7 +102,7 @@ public class FavouritesAdapter extends FirebaseRecyclerAdapter<RecipeFromFirebas
 
         //Interface to send callbacks...
         public interface ClickListener{
-             void onItemClick(View view, int position);
+            void onItemClick(View view, int position);
         }
 
         public void setOnClickListener(FavouritesViewHolder.ClickListener clickListener){

@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         favourite_button = findViewById(R.id.imageView_favourites);
         emptyFavouriteFragment = new EmptyFavouriteFragment();
 
-        favDatabaseReference = FirebaseDatabase.getInstance().getReference("favourites");
+        favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
 
         //FIREBASE TRYING
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     private final AddToFavListener favListener = new AddToFavListener() {
         @Override
         public void onButtonClicked(CharSequence title, CharSequence likes, CharSequence serving, CharSequence time, String image, String id) {
-            favDatabaseReference.child("favourites").addListenerForSingleValueEvent(new ValueEventListener() {
+            favDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.hasChild(id)){
