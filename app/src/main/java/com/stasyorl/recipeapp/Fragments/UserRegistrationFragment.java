@@ -44,6 +44,8 @@ public class UserRegistrationFragment extends Fragment{
     FirebaseAuth mAuth;
     FirebaseUser mUser;
 
+    boolean userRegistered = false;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,15 +60,18 @@ public class UserRegistrationFragment extends Fragment{
         loginFragment = new UserLoginFragment();
         signUpBtn = view.findViewById(R.id.sign_up_button);
         imageView_user_pic = view.findViewById(R.id.imageView_user_pic);
+        final String userName = register_name.getText().toString();
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://recipeapp-3a3e9-default-rtdb.firebaseio.com/");
+
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
-
         signUpBtn.setOnClickListener(view1 -> {
             PerforAuth();
+            userRegistered = true;
+
             //REALTIME DATABASE
 //            final String registerEmail = register_email.getText().toString();
 //            final String registerPassword = register_password.getText().toString();
@@ -102,6 +107,12 @@ public class UserRegistrationFragment extends Fragment{
 //                });
 //            }
         });
+//
+//        mAuth = FirebaseAuth.getInstance();
+//        mUser = mAuth.getCurrentUser();
+//        if(userRegistered){
+//            databaseReference.child(mUser.getUid()).child("username").setValue(userName);
+//        }
 
 
         txt_sign_in.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +144,7 @@ public class UserRegistrationFragment extends Fragment{
         final String registerEmail = register_email.getText().toString();
         final String registerPassword = register_password.getText().toString();
         final String confirmPassword = register_confirm_password.getText().toString();
-        final String userName = register_name.getText().toString();
+
 
         if(!registerEmail.matches(emailPattern)){
             register_email.setError("Enter correct email");
@@ -146,8 +157,8 @@ public class UserRegistrationFragment extends Fragment{
             mAuth.createUserWithEmailAndPassword(registerEmail, registerPassword).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY", Toast.LENGTH_SHORT).show();
-                    UsersList.users.add(mUser.getUid());
-                    databaseReference.child(mUser.getUid()).child("username").setValue(userName);
+//                    UsersList.users.add(mUser.getUid());
+//                    databaseReference.child(mUser.getUid()).child("username").setValue(userName);
                     closeWindow(UserRegistrationFragment.this);
                 }else{
                     String exception = task.getException().toString();

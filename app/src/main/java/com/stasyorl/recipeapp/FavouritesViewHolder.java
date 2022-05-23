@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class FavouritesViewHolder extends RecyclerView.ViewHolder{
-    CardView random_list_container;
+    public CardView random_list_container;
     TextView textView_title, textView_servings, textView_likes, textView_time;
     ImageView imageView_food,fav_image;
     public CardView fvrt_button;

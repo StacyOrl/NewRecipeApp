@@ -58,8 +58,8 @@ public class ExistingUserFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
-                hiUser.setText("HI "+name);
+//                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
+//                hiUser.setText("HI "+name);
             }
 
             @Override
