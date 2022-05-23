@@ -50,4 +50,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.firebaseui:firebase-ui-database:6.2.1'
     implementation 'com.google.firebase:firebase-auth'
+    implementation "com.airbnb.android:lottie:5.0.3"
 }
