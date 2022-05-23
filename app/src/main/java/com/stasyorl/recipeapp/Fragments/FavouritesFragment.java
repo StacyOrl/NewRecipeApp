@@ -215,8 +215,8 @@ public class FavouritesFragment extends Fragment {
     }
 
     void delete(String id, String currentUserId){
-        Query query = favDatabaseReference.child(currentUserId).child(id).orderByChild("id").equalTo(id);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query favQuery = favDatabaseReference.child(currentUserId).child(id).orderByChild("id").equalTo(id);
+        favQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
