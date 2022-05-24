@@ -178,7 +178,6 @@ public class MainActivity<isDeleted> extends AppCompatActivity implements Catego
                 getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
                 mainScreen.setVisibility(View.GONE);
                 fragmentContainer.setVisibility(View.VISIBLE);
-                MainActivity.this.onPause();
             }
         });
 

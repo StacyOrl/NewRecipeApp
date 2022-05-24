@@ -264,8 +264,8 @@ public class FavouritesFragment extends Fragment {
         });
     }
     public void closeWindow(Fragment fragment) {
-        isDeleted = true;
-         ((MainActivity) getActivity()).setDeleted(isDeleted);
+//        isDeleted = true;
+//         ((MainActivity) getActivity()).setDeleted(isDeleted);
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
