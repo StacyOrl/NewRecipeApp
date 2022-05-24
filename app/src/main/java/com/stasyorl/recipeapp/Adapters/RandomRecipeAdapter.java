@@ -3,6 +3,7 @@ package com.stasyorl.recipeapp.Adapters;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,13 +30,16 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
     List<Recipe> list;
     RecipeClickListener listener;
     AddToFavListener favListener;
+    boolean isDeleted = false;
+
 //    ActivityOptions options;
 
-    public RandomRecipeAdapter(Context context, List<Recipe> list, RecipeClickListener listener, AddToFavListener favListener) {
+    public RandomRecipeAdapter(Context context, List<Recipe> list, RecipeClickListener listener, AddToFavListener favListener, boolean isDeleted) {
         this.context = context;
         this.list = list;
         this.listener = listener;
         this.favListener = favListener;
+        this.isDeleted = isDeleted;
     }
 
     @NonNull
@@ -46,12 +50,12 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
 
     @Override
     public void onBindViewHolder(@NonNull RandomRecipeViewHolder holder, int position) {
-        holder.textView_title.setText(list.get(position).title);
+        holder.textView_title.setText(list.get(holder.getAdapterPosition()).title);
         holder.textView_title.setSelected(true);
-        holder.textView_likes.setText(list.get(position).aggregateLikes+" Likes");
-        holder.textView_servings.setText(list.get(position).servings+" Servings");
-        holder.textView_time.setText(list.get(position).readyInMinutes+" Minutes");
-        Picasso.get().load(list.get(position).image).into(holder.imageView_food);
+        holder.textView_likes.setText(list.get(holder.getAdapterPosition()).aggregateLikes+" Likes");
+        holder.textView_servings.setText(list.get(holder.getAdapterPosition()).servings+" Servings");
+        holder.textView_time.setText(list.get(holder.getAdapterPosition()).readyInMinutes+" Minutes");
+        Picasso.get().load(list.get(holder.getAdapterPosition()).image).into(holder.imageView_food);
         if (holder.imageView_food.getDrawable() == null){
             holder.imageView_food.setImageResource(R.mipmap.ic_no_photo_foreground);
         }
@@ -74,9 +78,20 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
             public void onClick(View view) {
                 favListener.onButtonClicked(holder.textView_title.getText(),
                         holder.textView_likes.getText(), holder.textView_servings.getText(),
-                        holder.textView_time.getText(), list.get(position).image,
+                        holder.textView_time.getText(), list.get(holder.getAdapterPosition()).image,
                         String.valueOf(list.get(holder.getAdapterPosition()).id));
-                holder.fav_image.setImageResource(R.drawable.ic_checked);
+
+
+                if(holder.fav_image.getDrawable().getConstantState() ==
+                        context.getResources().getDrawable(R.drawable.ic_checked).getConstantState()){
+                    holder.fav_image.setImageResource(R.drawable.ic_unchecked);
+                }else if(isDeleted){
+                    holder.fav_image.setImageResource(R.drawable.ic_unchecked);
+                }else{
+                    holder.fav_image.setImageResource(R.drawable.ic_checked);
+                }
+
+
 
             }
         });

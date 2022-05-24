@@ -22,14 +22,15 @@
 
             <TextView
                 android:id="@+id/textView_meal_name"
-                android:text="Recipe Name"
-                android:textSize="22sp"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:padding="8dp"
-                android:textStyle="bold"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:fontFamily="More Fonts..."
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Recipe Name"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView_meal_source"

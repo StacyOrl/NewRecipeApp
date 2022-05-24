@@ -41,6 +41,8 @@ import com.stasyorl.recipeapp.UsersList;
 import java.util.ArrayList;
 
 public class FavouritesFragment extends Fragment {
+
+    
     RecyclerView favouriteRecycler;
     FavouritesAdapter favouritesAdapter;
 
@@ -64,9 +66,9 @@ public class FavouritesFragment extends Fragment {
     boolean favChecker = false;
     RecipeFromFirebase recipeModel;
     RecipeClickListener recipeClickListener;
+    boolean isDeleted = false;
+    boolean closedWindow = false;
 
-
-    int totalSize;
 
 
     @Nullable
@@ -107,6 +109,8 @@ public class FavouritesFragment extends Fragment {
 
         query = FirebaseDatabase.getInstance().getReference().child(mUser.getUid()).child("SavedRecipes");
         recipeModel = new RecipeFromFirebase();
+
+
 
 
         DatabaseReference favReference = FirebaseDatabase.getInstance().getReference();
@@ -163,6 +167,7 @@ public class FavouritesFragment extends Fragment {
                 String currentUserId = user.getUid();
 
                 final String postKey = getRef(position).getKey();
+                query = FirebaseDatabase.getInstance().getReference().orderByKey();
 
                 holder.setItem(model.getTitle(), model.getLikes(), model.getServing(), model.getTime(), model.getImage());
 
@@ -188,8 +193,8 @@ public class FavouritesFragment extends Fragment {
 //                                        snapshot.child(id).getRef().removeValue();
                                         delete(postKey, currentUserId);
                                         favChecker = false;
-                                    }else{
 
+                                    }else{
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("title").setValue(title);
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("likes").setValue(likes);
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("serving").setValue(servings);
@@ -246,6 +251,7 @@ public class FavouritesFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     dataSnapshot.getRef().removeValue();
+                     isDeleted = true;  
 
                     Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
                 }
@@ -257,43 +263,11 @@ public class FavouritesFragment extends Fragment {
             }
         });
     }
-//    @Override
-//    public void onStart()
-//    {
-//        super.onStart();
-//        favouritesAdapter.startListening();
-//    }
-//
-//    @Override
-//    public void onStop()
-//    {
-//        super.onStop();
-//        favouritesAdapter.stopListening();
-//    }
     public void closeWindow(Fragment fragment) {
+        isDeleted = true;
+         ((MainActivity) getActivity()).setDeleted(isDeleted);
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
-
-//        final RecipeClickListener recipeClickListener = new RecipeClickListener() {
-//            @Override
-//            public void onRecipeClicked(String id) {
-//
-//                Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-//                intent.putExtra("id", id);
-//
-//                startActivity(intent);
-//
-//
-//
-//            }
-//        };
-
-//        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
-
-
     }
-
-
-
 }

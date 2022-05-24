@@ -2,6 +2,9 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/andika_new_basic</item>
+        <item>@font/chivo</item>
         <item>@font/maven_pro</item>
+        <item>@font/montserrat_alternates_light</item>
+        <item>@font/ubuntu_light</item>
     </array>
 </resources>

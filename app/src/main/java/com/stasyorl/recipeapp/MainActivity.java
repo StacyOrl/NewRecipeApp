@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.stasyorl.recipeapp.Adapters.CategoryAdapter;
 import com.stasyorl.recipeapp.Adapters.RandomRecipeAdapter;
@@ -48,7 +49,7 @@ import com.stasyorl.recipeapp.Models.Recipe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CategoryListener{
+public class MainActivity<isDeleted> extends AppCompatActivity implements CategoryListener{
 
     SearchView searchView;
 
@@ -71,16 +72,25 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
     UserRegistrationFragment registrationFragment;
     UserLoginFragment loginFragment;
-    FavouritesFragment favouritesFragment;
+    FavouritesFragment favouritesFragment = new FavouritesFragment();
     ExistingUserFragment existingUserFragment;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference favDatabaseReference, fvrt_listRef;
     Boolean favChecked = false;
+    boolean isDeleted;
     Recipe recipe;
     FirebaseUser user;
     EmptyFavouriteFragment emptyFavouriteFragment;
+    boolean closedWindow;
 
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public void setClosedWindow(boolean closedWindow) {
+        this.closedWindow = closedWindow;
+    }
 
     public LinearLayout getMainScreen() {
         return mainScreen;
@@ -89,6 +99,14 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     public FrameLayout getFragmentContainer() {
         return fragmentContainer;
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+//        isDeleted = favouritesFragment.isDeleted();
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,12 +122,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         favourite_button = findViewById(R.id.imageView_favourites);
         emptyFavouriteFragment = new EmptyFavouriteFragment();
 
+//        isDeleted = favouritesFragment.isDeleted();
+
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
 
 
         //FIREBASE TRYING
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+
 //        if (user == null) {
 //            FirebaseAuth.getInstance().signInWithEmailAndPassword("baseuser@gmail.com", "123456").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 //                @Override
@@ -157,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                 getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
                 mainScreen.setVisibility(View.GONE);
                 fragmentContainer.setVisibility(View.VISIBLE);
+                MainActivity.this.onPause();
             }
         });
 
@@ -199,30 +221,18 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
     }
 
-    public void changeUI(boolean isConnected) {
-        // Change status according to boolean value
-        MainActivity.this.runOnUiThread(() -> {
-            if (isConnected) {
-                Toast.makeText(MainActivity.this, "yes internet", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-
-            } else {
-                Toast.makeText(MainActivity.this, "no internet", Toast.LENGTH_SHORT).show();
-                no_wifi_image.setVisibility(View.VISIBLE);
-                dialog.dismiss();
-            }
-        });
-    }
 
 
     private final RandomRecipeResponseListener randomRecipeResponseListener = new RandomRecipeResponseListener() {
         @Override
         public void didFetch(RandomRecipeApiResponse response, String message) {
+
             dialog.dismiss();
+
             recyclerView = findViewById(R.id.recycler_random);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
-            randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, response.recipes, recipeClickListener, favListener);
+            randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, response.recipes, recipeClickListener, favListener, isDeleted);
             recyclerView.setAdapter(randomRecipeAdapter);
         }
 
@@ -268,8 +278,23 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
             favDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.hasChild(id)){
+                    if(snapshot.child(user.getUid()).child("SavedRecipes").hasChild(id)){
+
                         Toast.makeText(MainActivity.this, "This is already selected", Toast.LENGTH_SHORT).show();
+                        Query favQuery = favDatabaseReference.child(user.getUid()).child("SavedRecipes").orderByChild("id").equalTo(id);
+                        favQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                    dataSnapshot.getRef().removeValue();
+
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }else{
                         favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("title").setValue(title);
                         favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("likes").setValue(likes);
@@ -295,4 +320,9 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         manager.getRandomRecipes(randomRecipeResponseListener, tags);
         dialog.show();
     }
+
+    public Boolean getFavChecked() {
+        return favChecked;
+    }
 }
+

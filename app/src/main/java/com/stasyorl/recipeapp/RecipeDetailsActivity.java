@@ -96,13 +96,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             if (textView_meal_source.getText() == ""){
                 textView_meal_source.setText(R.string.unknown_source);
             }
-
+            response.summary = response.summary.split("%.")[0];
             textView_meal_summory.setText(response.summary.replace("<b>", "").
                     replace("</b>", "").
                     replace("<a", "").
                     replace(">", "").
                     replace("href=", "").
-                    replace("</a", ""));
+                    replace("</a", "")+"%.");
+
             Picasso.get().load(response.image).into(imageView_meal_image);
 
             if (imageView_meal_image.getDrawable() == null){
