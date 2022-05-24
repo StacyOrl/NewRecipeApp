@@ -49,7 +49,7 @@ import com.stasyorl.recipeapp.Models.Recipe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity<isDeleted> extends AppCompatActivity implements CategoryListener{
+public class MainActivity extends AppCompatActivity implements CategoryListener{
 
     SearchView searchView;
 
@@ -68,29 +68,19 @@ public class MainActivity<isDeleted> extends AppCompatActivity implements Catego
     FrameLayout fragmentContainer;
     LinearLayout mainScreen;
 
-    InternetConnectorReceiver receiver;
 
     UserRegistrationFragment registrationFragment;
     UserLoginFragment loginFragment;
     FavouritesFragment favouritesFragment = new FavouritesFragment();
     ExistingUserFragment existingUserFragment;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference favDatabaseReference, fvrt_listRef;
+    DatabaseReference favDatabaseReference;
     Boolean favChecked = false;
     boolean isDeleted;
-    Recipe recipe;
     FirebaseUser user;
     EmptyFavouriteFragment emptyFavouriteFragment;
     boolean closedWindow;
 
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
-    public void setClosedWindow(boolean closedWindow) {
-        this.closedWindow = closedWindow;
-    }
 
     public LinearLayout getMainScreen() {
         return mainScreen;
@@ -126,24 +116,6 @@ public class MainActivity<isDeleted> extends AppCompatActivity implements Catego
 
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-
-
-        //FIREBASE TRYING
-
-
-//        if (user == null) {
-//            FirebaseAuth.getInstance().signInWithEmailAndPassword("baseuser@gmail.com", "123456").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                @Override
-//                public void onComplete(@NonNull Task<AuthResult> task) {
-//
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-////                    user = FirebaseAuth.getInstance().getCurrentUser();
-//                }
-//            });
-//
-//        }
 
         if(user == null){
             imageView_user_pic = findViewById(R.id.imageView_user_pic);
@@ -320,8 +292,8 @@ public class MainActivity<isDeleted> extends AppCompatActivity implements Catego
         dialog.show();
     }
 
-    public Boolean getFavChecked() {
-        return favChecked;
-    }
+//    public Boolean getFavChecked() {
+//        return favChecked;
+//    }
 }
 

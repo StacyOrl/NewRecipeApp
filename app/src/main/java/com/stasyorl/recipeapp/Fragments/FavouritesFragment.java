@@ -60,7 +60,7 @@ public class FavouritesFragment extends Fragment {
     UserRegistrationFragment registrationFragment;
 
 
-    DatabaseReference databaseReference;
+//    DatabaseReference databaseReference;
     Query query;
 
     boolean favChecker = false;
@@ -75,6 +75,8 @@ public class FavouritesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favourites_fragment, container, false);
+
+
 
         RecipeClickListener listener = new RecipeClickListener() {
             @Override
@@ -105,9 +107,9 @@ public class FavouritesFragment extends Fragment {
         mUser = mAuth.getCurrentUser();
         favouriteRecycler = view.findViewById(R.id.favourites_list);
         favDatabaseReference = database.getReference();
-        databaseReference = FirebaseDatabase.getInstance().getReference("SavedRecipes");
+//        databaseReference = FirebaseDatabase.getInstance().getReference("SavedRecipes");
 
-        query = FirebaseDatabase.getInstance().getReference().child(mUser.getUid()).child("SavedRecipes");
+
         recipeModel = new RecipeFromFirebase();
 
 
@@ -150,21 +152,22 @@ public class FavouritesFragment extends Fragment {
 
             }
         });
-
-
+        String currentUserId = mUser.getUid();
+        query = FirebaseDatabase.getInstance().getReference().child(currentUserId).child("SavedRecipes");
         favouriteRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         FirebaseRecyclerOptions<RecipeFromFirebase> options
                 = new FirebaseRecyclerOptions.Builder<RecipeFromFirebase>()
                 .setQuery(query, RecipeFromFirebase.class)
                 .build();
 
+
         FirebaseRecyclerAdapter<RecipeFromFirebase, FavouritesViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<RecipeFromFirebase, FavouritesViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull RecipeFromFirebase model) {
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String currentUserId = user.getUid();
+//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
 
                 final String postKey = getRef(position).getKey();
                 query = FirebaseDatabase.getInstance().getReference().orderByKey();
@@ -270,4 +273,10 @@ public class FavouritesFragment extends Fragment {
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
     }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+//
+//    }
 }
