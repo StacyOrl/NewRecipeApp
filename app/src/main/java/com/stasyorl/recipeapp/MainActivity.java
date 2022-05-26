@@ -40,6 +40,7 @@ import com.stasyorl.recipeapp.Fragments.UserLoginFragment;
 import com.stasyorl.recipeapp.Fragments.UserRegistrationFragment;
 import com.stasyorl.recipeapp.Listeners.AddToFavListener;
 import com.stasyorl.recipeapp.Listeners.CategoryListener;
+import com.stasyorl.recipeapp.Listeners.OnDeleteListener;
 import com.stasyorl.recipeapp.Listeners.RandomRecipeResponseListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.Models.CategoryModel;
@@ -71,15 +72,16 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
     UserRegistrationFragment registrationFragment;
     UserLoginFragment loginFragment;
-    FavouritesFragment favouritesFragment = new FavouritesFragment();
+    FavouritesFragment favouritesFragment;
     ExistingUserFragment existingUserFragment;
 
     DatabaseReference favDatabaseReference;
-    Boolean favChecked = false;
-    boolean isDeleted;
+    boolean recipeIsDeleted;
     FirebaseUser user;
     EmptyFavouriteFragment emptyFavouriteFragment;
     boolean closedWindow;
+
+
 
 
     public LinearLayout getMainScreen() {
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     protected void onStart() {
         super.onStart();
         user = FirebaseAuth.getInstance().getCurrentUser();
-//        isDeleted = favouritesFragment.isDeleted();
+
 
     }
 
@@ -108,11 +110,19 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         fragmentContainer = findViewById(R.id.fragmentContainer);
         mainScreen = findViewById(R.id.main_screen);
         imageView_user_pic = findViewById(R.id.imageView_user_pic);
-        favouritesFragment = new FavouritesFragment();
+
+
+        final OnDeleteListener deleteListener = new OnDeleteListener() {
+            @Override
+            public void onDeleteRecipe(boolean isDeleted) {
+                recipeIsDeleted = isDeleted;
+            }
+        };
+
+
+        favouritesFragment = new FavouritesFragment(deleteListener);
         favourite_button = findViewById(R.id.imageView_favourites);
         emptyFavouriteFragment = new EmptyFavouriteFragment();
-
-//        isDeleted = favouritesFragment.isDeleted();
 
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -134,24 +144,27 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                 }
             });
         }
-
+        user = FirebaseAuth.getInstance().getCurrentUser();
         imageView_user_pic.setOnClickListener(view -> {
 
-            getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
-            mainScreen.setVisibility(View.GONE);
-            fragmentContainer.setVisibility(View.VISIBLE);
-
-
-        });
-
-        favourite_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
                 mainScreen.setVisibility(View.GONE);
                 fragmentContainer.setVisibility(View.VISIBLE);
-            }
-        });
+
+
+            });
+
+            favourite_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
+                    mainScreen.setVisibility(View.GONE);
+                    fragmentContainer.setVisibility(View.VISIBLE);
+                }
+            });
+
+
+
 
         dialog = new ProgressDialog(this);
         dialog.setTitle("Loading...");
@@ -194,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
 
 
-    private final RandomRecipeResponseListener randomRecipeResponseListener = new RandomRecipeResponseListener() {
+    public RandomRecipeResponseListener randomRecipeResponseListener = new RandomRecipeResponseListener() {
         @Override
         public void didFetch(RandomRecipeApiResponse response, String message) {
 
@@ -203,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
             recyclerView = findViewById(R.id.recycler_random);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
-            randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, response.recipes, recipeClickListener, favListener, isDeleted);
+            randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, response.recipes, recipeClickListener, favListener, recipeIsDeleted);
             recyclerView.setAdapter(randomRecipeAdapter);
         }
 
@@ -283,6 +296,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
             });
         }
     };
+
+
 
     @Override
     public void onCategoryClicked(int position) {

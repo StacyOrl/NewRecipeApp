@@ -30,7 +30,8 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
     List<Recipe> list;
     RecipeClickListener listener;
     AddToFavListener favListener;
-    boolean isDeleted = false;
+    boolean isDeleted;
+
 
 //    ActivityOptions options;
 
@@ -72,6 +73,10 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
 //                context.startActivity(intent, options.toBundle());
             }
         });
+
+        if(isDeleted){
+            holder.fav_image.setImageResource(R.drawable.ic_unchecked);
+        }
 
         holder.fvrt_button.setOnClickListener(new View.OnClickListener() {
             @Override

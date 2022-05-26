@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Adapters.FavouritesAdapter;
 import com.stasyorl.recipeapp.FavouritesViewHolder;
+import com.stasyorl.recipeapp.Listeners.OnDeleteListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.Models.Recipe;
@@ -58,6 +59,7 @@ public class FavouritesFragment extends Fragment {
 
     UserLoginFragment loginFragment;
     UserRegistrationFragment registrationFragment;
+    OnDeleteListener deleteListener;
 
 
 //    DatabaseReference databaseReference;
@@ -69,7 +71,12 @@ public class FavouritesFragment extends Fragment {
     boolean isDeleted = false;
     boolean closedWindow = false;
 
+    public FavouritesFragment() {
+    }
 
+    public FavouritesFragment(OnDeleteListener deleteListener) {
+        this.deleteListener = deleteListener;
+    }
 
     @Nullable
     @Override
@@ -77,21 +84,11 @@ public class FavouritesFragment extends Fragment {
         View view = inflater.inflate(R.layout.favourites_fragment, container, false);
 
 
+        recipeClickListener = id -> {
+            Intent intent = new Intent(getActivity(), RecipeDetailsActivity.class);
+            intent.putExtra("id", id);
 
-        RecipeClickListener listener = new RecipeClickListener() {
-            @Override
-            public void onRecipeClicked(String id) {
-
-            }
-        };
-        recipeClickListener = new RecipeClickListener() {
-            @Override
-            public void onRecipeClicked(String id) {
-                Intent intent = new Intent(getActivity(), RecipeDetailsActivity.class);
-                intent.putExtra("id", id);
-
-                startActivity(intent);
-            }
+            startActivity(intent);
         };
 
         signUp = view.findViewById(R.id.sign_upText);
@@ -107,14 +104,7 @@ public class FavouritesFragment extends Fragment {
         mUser = mAuth.getCurrentUser();
         favouriteRecycler = view.findViewById(R.id.favourites_list);
         favDatabaseReference = database.getReference();
-//        databaseReference = FirebaseDatabase.getInstance().getReference("SavedRecipes");
-
-
         recipeModel = new RecipeFromFirebase();
-
-
-
-
         DatabaseReference favReference = FirebaseDatabase.getInstance().getReference();
 
 
@@ -124,9 +114,6 @@ public class FavouritesFragment extends Fragment {
                 closeWindow(FavouritesFragment.this);
             }
         });
-
-
-
         favDatabaseReference.addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -140,9 +127,6 @@ public class FavouritesFragment extends Fragment {
                 }else{
                     noFavourites.setVisibility(View.GONE);
                     favouriteRecycler.setVisibility(View.VISIBLE);
-
-
-
                 }
 
             }
@@ -166,8 +150,6 @@ public class FavouritesFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull RecipeFromFirebase model) {
 
-//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
 
                 final String postKey = getRef(position).getKey();
                 query = FirebaseDatabase.getInstance().getReference().orderByKey();
@@ -184,44 +166,36 @@ public class FavouritesFragment extends Fragment {
 
 
                 holder.favouriteChecker(id, currentUserId);
-                holder.fvrt_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        favChecker = true;
-                        favReference.child(currentUserId).child("SavedRecipes").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(favChecker){
-                                    if(snapshot.hasChild(id)){
-//                                        snapshot.child(id).getRef().removeValue();
-                                        delete(postKey, currentUserId);
-                                        favChecker = false;
 
-                                    }else{
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("title").setValue(title);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("likes").setValue(likes);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("serving").setValue(servings);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("time").setValue(time);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("image").setValue(image);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("id").setValue(id);
-//                                        recipeModel.setTitle(title);
-//                                        recipeModel.setTime(time);
-//                                        recipeModel.setLikes(likes);
-//                                        recipeModel.setServing(servings);
-//                                        recipeModel.setId(id);
-//                                        recipeModel.setImage(image);
-//                                        favReference.child(currentUserId).child("SavedRecipes").setValue(recipeModel);
-                                        favChecker = false;
-                                    }
+                holder.fvrt_button.setOnClickListener(view1 -> {
+                    favChecker = true;
+                    favReference.child(currentUserId).child("SavedRecipes").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(favChecker){
+                                if(snapshot.hasChild(id)){
+                                    delete(postKey, currentUserId);
+                                    deleteListener.onDeleteRecipe(true);
+                                    favChecker = false;
+
+                                }else{
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("title").setValue(title);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("likes").setValue(likes);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("serving").setValue(servings);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("time").setValue(time);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("image").setValue(image);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("id").setValue(id);
+                                    favChecker = false;
+                                    deleteListener.onDeleteRecipe(false);
                                 }
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                    }
+                        }
+                    });
                 });
 
                 holder.random_list_container.setOnClickListener(new View.OnClickListener() {
@@ -254,7 +228,9 @@ public class FavouritesFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     dataSnapshot.getRef().removeValue();
-                     isDeleted = true;  
+
+
+
 
                     Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
                 }
@@ -267,15 +243,13 @@ public class FavouritesFragment extends Fragment {
         });
     }
     public void closeWindow(Fragment fragment) {
-//        isDeleted = true;
-//         ((MainActivity) getActivity()).setDeleted(isDeleted);
+
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
+
     }
-//    @Override
-//    public void onStart() {
-//        super.onStart();
+
 //
 //
 //    }
