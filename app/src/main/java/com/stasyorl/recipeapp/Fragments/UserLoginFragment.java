@@ -1,5 +1,6 @@
 package com.stasyorl.recipeapp.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,8 @@ public class UserLoginFragment extends Fragment {
 
     FirebaseAuth mAuth;
     FirebaseUser mUser;
+
+
     public ArrayList<String> users = new ArrayList<>();
 
     @Nullable
@@ -89,6 +92,18 @@ public class UserLoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startLogin();
+                ((MainActivity) getActivity()).onResume();
+//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                String userId = user.getUid();
+//
+//                boolean userLoggedIn = true;
+//                Intent intent = new Intent(getActivity(), MainActivity.class);
+//                intent.putExtra("user", userId);
+//
+//
+//                intent.putExtra("userLoggedIn", userLoggedIn);
+//                startActivity(intent);
+
             }
         });
 

@@ -1,6 +1,7 @@
 package com.stasyorl.recipeapp.Fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -44,7 +45,6 @@ public class UserRegistrationFragment extends Fragment{
     FirebaseAuth mAuth;
     FirebaseUser mUser;
 
-    boolean userRegistered = false;
 
 
     @Override
@@ -70,42 +70,11 @@ public class UserRegistrationFragment extends Fragment{
 
         signUpBtn.setOnClickListener(view1 -> {
             PerforAuth();
-            userRegistered = true;
+            boolean userRegistered = true;
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.putExtra("userRegistered", userRegistered);
+            startActivity(intent);
 
-            //REALTIME DATABASE
-//            final String registerEmail = register_email.getText().toString();
-//            final String registerPassword = register_password.getText().toString();
-//            final String confirmPassword = register_confirm_password.getText().toString();
-//
-//            if(registerEmail.isEmpty() || registerPassword.isEmpty() || confirmPassword.isEmpty()) {
-//                Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
-//            }
-//            else if(!registerPassword.equals(confirmPassword)){
-//                Toast.makeText(getContext(), "Passwords are not matching", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            else{
-//                databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        if(snapshot.hasChild(registerEmail)){
-//                            Toast.makeText(getContext(), "This email is already registered", Toast.LENGTH_SHORT).show();
-//                        }
-//                        else{
-//                            databaseReference.child("users").child(registerEmail).child("email").setValue(registerEmail);
-//                            databaseReference.child("users").child(registerEmail).child("password").setValue(registerPassword);
-//
-//                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
-//                            closeWindow(UserRegistrationFragment.this);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
-//            }
         });
 //
 //        mAuth = FirebaseAuth.getInstance();

@@ -78,8 +78,10 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     DatabaseReference favDatabaseReference, fvrt_listRef;
     Boolean favChecked = false;
     Recipe recipe;
-    FirebaseUser user;
     EmptyFavouriteFragment emptyFavouriteFragment;
+
+
+    FirebaseUser user;
 
 
     public LinearLayout getMainScreen() {
@@ -106,32 +108,39 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-
-        //FIREBASE TRYING
-
         user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user == null) {
-//            FirebaseAuth.getInstance().signInWithEmailAndPassword("baseuser@gmail.com", "123456").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                @Override
-//                public void onComplete(@NonNull Task<AuthResult> task) {
-//
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-////                    user = FirebaseAuth.getInstance().getCurrentUser();
-//                }
-//            });
-//
-//        }
-
-        if(user == null){
-            imageView_user_pic = findViewById(R.id.imageView_user_pic);
-
+        if(user!=null){
             imageView_user_pic.setOnClickListener(view -> {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-                    mainScreen.setVisibility(View.GONE);
-                    fragmentContainer.setVisibility(View.VISIBLE);
+//
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
+                mainScreen.setVisibility(View.GONE);
+                MainActivity.this.onPause();
+                fragmentContainer.setVisibility(View.VISIBLE);
+
+
             });
+
+            favourite_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
+                    mainScreen.setVisibility(View.GONE);
+                    MainActivity.this.onPause();
+                    fragmentContainer.setVisibility(View.VISIBLE);
+                }
+            });
+        }else{
+            //UNCOMMENT THIS IN CASE IT DOESNT WORK
+//            user = FirebaseAuth.getInstance().getCurrentUser();
+            imageView_user_pic.setOnClickListener(view -> {
+//
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+                mainScreen.setVisibility(View.GONE);
+                fragmentContainer.setVisibility(View.VISIBLE);
+
+
+            });
+
             favourite_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -142,23 +151,45 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
             });
         }
 
-        imageView_user_pic.setOnClickListener(view -> {
 
-            getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
-            mainScreen.setVisibility(View.GONE);
-            fragmentContainer.setVisibility(View.VISIBLE);
+//
+//        if(user == null){
+//            imageView_user_pic = findViewById(R.id.imageView_user_pic);
+//
+//            imageView_user_pic.setOnClickListener(view -> {
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//            });
+//            favourite_button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//                }
+//            });
+//        }else{
+//            imageView_user_pic.setOnClickListener(view -> {
+//
+//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
+//                mainScreen.setVisibility(View.GONE);
+//                fragmentContainer.setVisibility(View.VISIBLE);
+//
+//
+//            });
+//
+//            favourite_button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//                }
+//            });
+//        }
 
 
-        });
-
-        favourite_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
-                mainScreen.setVisibility(View.GONE);
-                fragmentContainer.setVisibility(View.VISIBLE);
-            }
-        });
 
         dialog = new ProgressDialog(this);
         dialog.setTitle("Loading...");
@@ -199,21 +230,101 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
     }
 
-    public void changeUI(boolean isConnected) {
-        // Change status according to boolean value
-        MainActivity.this.runOnUiThread(() -> {
-            if (isConnected) {
-                Toast.makeText(MainActivity.this, "yes internet", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-
-            } else {
-                Toast.makeText(MainActivity.this, "no internet", Toast.LENGTH_SHORT).show();
-                no_wifi_image.setVisibility(View.VISIBLE);
-                dialog.dismiss();
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Toast.makeText(this, "PAUSE", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onResume() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        super.onResume();
+
+
+
+        Toast.makeText(this, "RESUME", Toast.LENGTH_SHORT).show();
+
+//        if(user!=null){
+//            imageView_user_pic.setOnClickListener(view -> {
+////
+//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
+//                mainScreen.setVisibility(View.GONE);
+//                MainActivity.this.onPause();
+//                fragmentContainer.setVisibility(View.VISIBLE);
+//
+//
+//            });
+//
+//            favourite_button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    MainActivity.this.onPause();
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//                }
+//            });
+//        }else{
+//            //UNCOMMENT THIS IN CASE IT DOESNT WORK
+////            user = FirebaseAuth.getInstance().getCurrentUser();
+//            imageView_user_pic.setOnClickListener(view -> {
+////
+//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+//                mainScreen.setVisibility(View.GONE);
+//                fragmentContainer.setVisibility(View.VISIBLE);
+//
+//
+//            });
+//
+//            favourite_button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//                }
+//            });
+//        }
+//
+//
+//        dialog = new ProgressDialog(this);
+//        dialog.setTitle("Loading...");
+//
+//
+//
+//        searchView = findViewById(R.id.searchView_home);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                tags.clear();
+//                tags.add(query);
+//                manager.getRandomRecipes(randomRecipeResponseListener, tags);
+//                dialog.show();
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
+//
+//
+////
+//        manager = new RequestManager(this);
+//
+//        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
+//        recycle_category = findViewById(R.id.category_recycler);
+//        recycle_category.setHasFixedSize(true);
+//        recycle_category.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+//        categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
+//        recycle_category.setAdapter(categoryAdapter);
+//        onCategoryClicked(0);
+//
+
+
+    }
 
     private final RandomRecipeResponseListener randomRecipeResponseListener = new RandomRecipeResponseListener() {
         @Override
@@ -231,6 +342,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
             Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
             dialog.dismiss();
             no_wifi_image = findViewById(R.id.no_wifi_image);
+            no_wifi_image.setVisibility(View.VISIBLE);
 
         }
     };

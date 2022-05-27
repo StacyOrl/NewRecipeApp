@@ -74,12 +74,6 @@ public class FavouritesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favourites_fragment, container, false);
 
-        RecipeClickListener listener = new RecipeClickListener() {
-            @Override
-            public void onRecipeClicked(String id) {
-
-            }
-        };
         recipeClickListener = new RecipeClickListener() {
             @Override
             public void onRecipeClicked(String id) {
@@ -121,31 +115,6 @@ public class FavouritesFragment extends Fragment {
 
 
 
-        favDatabaseReference.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.child(mUser.getUid()).hasChild("SavedRecipes")){
-                    favouriteRecycler.setVisibility(View.GONE);
-                    noFavourites.setVisibility(View.VISIBLE);
-                    textExplain = view.findViewById(R.id.simpleText);
-                    signOrLogin.setVisibility(View.INVISIBLE);
-                    textExplain.setText("You haven't added your recipes yet");
-                }else{
-                    noFavourites.setVisibility(View.GONE);
-                    favouriteRecycler.setVisibility(View.VISIBLE);
-
-
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 
         favouriteRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -235,6 +204,33 @@ public class FavouritesFragment extends Fragment {
         };
         firebaseRecyclerAdapter.startListening();
         favouriteRecycler.setAdapter(firebaseRecyclerAdapter);
+
+
+        favDatabaseReference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.child(mUser.getUid()).hasChild("SavedRecipes")){
+                    favouriteRecycler.setVisibility(View.GONE);
+                    noFavourites.setVisibility(View.VISIBLE);
+                    textExplain = view.findViewById(R.id.simpleText);
+                    signOrLogin.setVisibility(View.INVISIBLE);
+                    textExplain.setText("You haven't added your recipes yet");
+                }else{
+                    noFavourites.setVisibility(View.GONE);
+                    favouriteRecycler.setVisibility(View.VISIBLE);
+
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         return view;
     }
