@@ -1,58 +1,62 @@
 package com.stasyorl.recipeapp.Models;
 
 public class RecipeFromFirebase {
-    public String aggregateLikes;
-    public String recipeId;
-    public String recipeTitle;
-    public String readyInMinutes;
-    public String servings;
-    public String recipeImage;
+    public String likes;
+    public String id;
+    public String title;
+    public String time;
+    public String serving;
+    public String image;
 
-    public String getAggregateLikes() {
-        return aggregateLikes;
+    public RecipeFromFirebase(){
+
     }
 
-    public void setAggregateLikes(String aggregateLikes) {
-        this.aggregateLikes = aggregateLikes;
+    public String getLikes() {
+        return likes;
     }
 
-    public String getRecipeId() {
-        return recipeId;
+    public void setLikes(String likes) {
+        this.likes = likes;
     }
 
-    public void setRecipeId(String recipeId) {
-        this.recipeId = recipeId;
+    public String getId() {
+        return id;
     }
 
-    public String getRecipeTitle() {
-        return recipeTitle;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setRecipeTitle(String recipeTitle) {
-        this.recipeTitle = recipeTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public String getReadyInMinutes() {
-        return readyInMinutes;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setReadyInMinutes(String readyInMinutes) {
-        this.readyInMinutes = readyInMinutes;
+    public String getTime() {
+        return time;
     }
 
-    public String getServings() {
-        return servings;
+    public void setTime(String time) {
+        this.time = time;
     }
 
-    public void setServings(String servings) {
-        this.servings = servings;
+    public String getServing() {
+        return serving;
     }
 
-    public String getRecipeImage() {
-        return recipeImage;
+    public void setServing(String serving) {
+        this.serving = serving;
     }
 
-    public void setRecipeImage(String recipeImage) {
-        this.recipeImage = recipeImage;
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

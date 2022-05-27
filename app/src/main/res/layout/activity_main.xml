@@ -54,7 +54,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageView_favourites"
+                app:layout_constraintEnd_toStartOf="@+id/cardView_fav"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginEnd="15dp"
                 app:cardCornerRadius="20dp"
@@ -71,20 +71,29 @@
             </androidx.cardview.widget.CardView>
 
 
-
-            <ImageView
-                android:id="@+id/imageView_favourites"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_gravity="end"
-                android:background="@color/white"
-                android:src="@drawable/ic_unchecked"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_fav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginEnd="15dp"
+                app:cardCornerRadius="6dp">
+               <ImageView
+                   android:id="@+id/imageView_favourites"
+                   android:layout_width="35dp"
+                   android:layout_height="40dp"
+                   android:layout_gravity="end"
+                   android:background="@color/white"
+                   android:src="@drawable/ic_unchecked"
 
-                />
+
+
+                   />
+
+            </androidx.cardview.widget.CardView>
+
 
 
 

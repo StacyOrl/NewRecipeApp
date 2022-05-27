@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,10 +27,12 @@ import com.stasyorl.recipeapp.R;
 public class ExistingUserFragment extends Fragment {
     TextView hiUser;
     Button savedRecipes, logOut;
+    ImageView closeButton;
     FirebaseUser mUser;
     DatabaseReference databaseReference;
     ExistingUserFragment existingUserFragment;
     UserRegistrationFragment registrationFragment;
+    FavouritesFragment favouritesFragment;
 
     @Nullable
     @Override
@@ -36,16 +40,26 @@ public class ExistingUserFragment extends Fragment {
         View view = inflater.inflate(R.layout.set_up_user, container, false);
         hiUser = view.findViewById(R.id.hi_user);
         logOut = view.findViewById(R.id.log_out_btn);
+        closeButton = view.findViewById(R.id.imageView_close);
         savedRecipes = view.findViewById(R.id.saved_recipes_btn);
         existingUserFragment = new ExistingUserFragment();
+        favouritesFragment = new FavouritesFragment();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         registrationFragment = new UserRegistrationFragment();
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeWindow(ExistingUserFragment.this);
+            }
+        });
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
-                hiUser.setText("HI "+name);
+//                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
+//                hiUser.setText("HI "+name);
             }
 
             @Override
@@ -58,7 +72,14 @@ public class ExistingUserFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
-                getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();;
+                getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();
+            }
+        });
+
+        savedRecipes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, favouritesFragment).commit();
             }
         });
 
