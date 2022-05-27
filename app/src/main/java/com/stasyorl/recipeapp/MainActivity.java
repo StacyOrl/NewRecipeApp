@@ -43,6 +43,7 @@ import com.stasyorl.recipeapp.Listeners.CategoryListener;
 import com.stasyorl.recipeapp.Listeners.OnDeleteListener;
 import com.stasyorl.recipeapp.Listeners.RandomRecipeResponseListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
+import com.stasyorl.recipeapp.Listeners.RegisteredUser;
 import com.stasyorl.recipeapp.Models.CategoryModel;
 import com.stasyorl.recipeapp.Models.RandomRecipeApiResponse;
 import com.stasyorl.recipeapp.Models.Recipe;
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     DatabaseReference favDatabaseReference;
     boolean recipeIsDeleted;
     FirebaseUser user;
+
+    String userId;
     EmptyFavouriteFragment emptyFavouriteFragment;
     boolean closedWindow;
 
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     protected void onStart() {
         super.onStart();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        userId = user.getUid();
+
 
 
     }
@@ -104,12 +109,21 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        registrationFragment = new UserRegistrationFragment();
+
+        RegisteredUser registeredUser = new RegisteredUser() {
+            @Override
+            public void onUserRegistered(boolean userRegistered) {
+                MainActivity.this.onRestart();
+            }
+        };
+
+        registrationFragment = new UserRegistrationFragment(registeredUser);
         loginFragment = new UserLoginFragment();
         existingUserFragment = new ExistingUserFragment();
         fragmentContainer = findViewById(R.id.fragmentContainer);
         mainScreen = findViewById(R.id.main_screen);
         imageView_user_pic = findViewById(R.id.imageView_user_pic);
+
 
 
         final OnDeleteListener deleteListener = new OnDeleteListener() {
@@ -126,14 +140,13 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-
-        if(user == null){
+        if(userId == null){
             imageView_user_pic = findViewById(R.id.imageView_user_pic);
 
             imageView_user_pic.setOnClickListener(view -> {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-                    mainScreen.setVisibility(View.GONE);
-                    fragmentContainer.setVisibility(View.VISIBLE);
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+                mainScreen.setVisibility(View.GONE);
+                fragmentContainer.setVisibility(View.VISIBLE);
             });
             favourite_button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,9 +156,10 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                     fragmentContainer.setVisibility(View.VISIBLE);
                 }
             });
-        }
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        imageView_user_pic.setOnClickListener(view -> {
+        }else{
+
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            imageView_user_pic.setOnClickListener(view -> {
 
                 getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
                 mainScreen.setVisibility(View.GONE);
@@ -162,8 +176,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                     fragmentContainer.setVisibility(View.VISIBLE);
                 }
             });
-
-
+        }
 
 
         dialog = new ProgressDialog(this);
@@ -205,7 +218,11 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
     }
 
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Toast.makeText(this, "on resume", Toast.LENGTH_SHORT).show();
+    }
 
     public RandomRecipeResponseListener randomRecipeResponseListener = new RandomRecipeResponseListener() {
         @Override
@@ -229,8 +246,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         }
     };
 
-
-
     private ArrayList<CategoryModel> createData(String[] array) {
         ArrayList<CategoryModel> models = new ArrayList<>();
         for (int i = 0; i < array.length; i++) {
@@ -240,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
         return models;
     }
-
 
     private final RecipeClickListener recipeClickListener = new RecipeClickListener() {
         @Override
@@ -297,8 +311,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         }
     };
 
-
-
     @Override
     public void onCategoryClicked(int position) {
         tags.clear();
@@ -307,8 +319,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         dialog.show();
     }
 
-//    public Boolean getFavChecked() {
-//        return favChecked;
-//    }
+
 }
 

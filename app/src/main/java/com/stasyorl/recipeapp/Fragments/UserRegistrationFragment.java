@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Listeners.OnBackButtonListener;
+import com.stasyorl.recipeapp.Listeners.RegisteredUser;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.R;
 import com.stasyorl.recipeapp.UsersList;
@@ -42,15 +43,24 @@ public class UserRegistrationFragment extends Fragment{
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
     FirebaseAuth mAuth;
-    FirebaseUser mUser;
+    RegisteredUser registeredUser;
 
     boolean userRegistered = false;
 
+    public UserRegistrationFragment() {
+    }
+
+    public UserRegistrationFragment(RegisteredUser registeredUser) {
+        this.registeredUser = registeredUser;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_registration, container, false);
+
+        mAuth = FirebaseAuth.getInstance();
+
         register_email = view.findViewById(R.id.register_email);
         register_password = view.findViewById(R.id.register_password);
         register_confirm_password = view.findViewById(R.id.register_confirm_password);
@@ -65,47 +75,18 @@ public class UserRegistrationFragment extends Fragment{
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://recipeapp-3a3e9-default-rtdb.firebaseio.com/");
 
 
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
+
 
         signUpBtn.setOnClickListener(view1 -> {
             PerforAuth();
             userRegistered = true;
+            registeredUser.onUserRegistered(userRegistered);
+            FirebaseUser mUser = mAuth.getCurrentUser();
+            String currentUserId = mUser.getUid();
+            if(currentUserId!=null){
+                databaseReference.child(mUser.getUid()).child("username").setValue(userName);
+            }
 
-            //REALTIME DATABASE
-//            final String registerEmail = register_email.getText().toString();
-//            final String registerPassword = register_password.getText().toString();
-//            final String confirmPassword = register_confirm_password.getText().toString();
-//
-//            if(registerEmail.isEmpty() || registerPassword.isEmpty() || confirmPassword.isEmpty()) {
-//                Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
-//            }
-//            else if(!registerPassword.equals(confirmPassword)){
-//                Toast.makeText(getContext(), "Passwords are not matching", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            else{
-//                databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        if(snapshot.hasChild(registerEmail)){
-//                            Toast.makeText(getContext(), "This email is already registered", Toast.LENGTH_SHORT).show();
-//                        }
-//                        else{
-//                            databaseReference.child("users").child(registerEmail).child("email").setValue(registerEmail);
-//                            databaseReference.child("users").child(registerEmail).child("password").setValue(registerPassword);
-//
-//                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
-//                            closeWindow(UserRegistrationFragment.this);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
-//            }
         });
 //
 //        mAuth = FirebaseAuth.getInstance();
@@ -113,6 +94,7 @@ public class UserRegistrationFragment extends Fragment{
 //        if(userRegistered){
 //            databaseReference.child(mUser.getUid()).child("username").setValue(userName);
 //        }
+
 
 
         txt_sign_in.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +140,7 @@ public class UserRegistrationFragment extends Fragment{
                 if(task.isSuccessful()){
                     Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY", Toast.LENGTH_SHORT).show();
 //                    UsersList.users.add(mUser.getUid());
-//                    databaseReference.child(mUser.getUid()).child("username").setValue(userName);
+
                     closeWindow(UserRegistrationFragment.this);
                 }else{
                     String exception = task.getException().toString();

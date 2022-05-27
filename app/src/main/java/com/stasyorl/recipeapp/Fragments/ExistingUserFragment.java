@@ -54,19 +54,21 @@ public class ExistingUserFragment extends Fragment {
                 closeWindow(ExistingUserFragment.this);
             }
         });
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        if(mUser!=null){
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
 //                hiUser.setText("HI "+name);
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override

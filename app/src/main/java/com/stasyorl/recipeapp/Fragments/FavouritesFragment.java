@@ -107,6 +107,8 @@ public class FavouritesFragment extends Fragment {
         recipeModel = new RecipeFromFirebase();
         DatabaseReference favReference = FirebaseDatabase.getInstance().getReference();
 
+        String currentUserId = mUser.getUid();
+
 
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +120,7 @@ public class FavouritesFragment extends Fragment {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.child(mUser.getUid()).hasChild("SavedRecipes")){
+                if(!snapshot.child(currentUserId).hasChild("SavedRecipes")){
                     favouriteRecycler.setVisibility(View.GONE);
                     noFavourites.setVisibility(View.VISIBLE);
                     textExplain = view.findViewById(R.id.simpleText);
@@ -136,7 +138,7 @@ public class FavouritesFragment extends Fragment {
 
             }
         });
-        String currentUserId = mUser.getUid();
+
         query = FirebaseDatabase.getInstance().getReference().child(currentUserId).child("SavedRecipes");
         favouriteRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         FirebaseRecyclerOptions<RecipeFromFirebase> options
