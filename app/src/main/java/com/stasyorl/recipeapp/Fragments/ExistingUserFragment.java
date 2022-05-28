@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.stasyorl.recipeapp.Listeners.LoggedOutUser;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.R;
 
@@ -30,9 +31,17 @@ public class ExistingUserFragment extends Fragment {
     ImageView closeButton;
     FirebaseUser mUser;
     DatabaseReference databaseReference;
-    ExistingUserFragment existingUserFragment;
     UserRegistrationFragment registrationFragment;
     FavouritesFragment favouritesFragment;
+
+    LoggedOutUser loggedOutUser;
+
+    public ExistingUserFragment(LoggedOutUser loggedOutUser) {
+        this.loggedOutUser = loggedOutUser;
+    }
+
+    public ExistingUserFragment() {
+    }
 
     @Nullable
     @Override
@@ -42,7 +51,6 @@ public class ExistingUserFragment extends Fragment {
         logOut = view.findViewById(R.id.log_out_btn);
         closeButton = view.findViewById(R.id.imageView_close);
         savedRecipes = view.findViewById(R.id.saved_recipes_btn);
-        existingUserFragment = new ExistingUserFragment();
         favouritesFragment = new FavouritesFragment();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -73,6 +81,9 @@ public class ExistingUserFragment extends Fragment {
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();
+//                ((MainActivity) getActivity()).onResume();
+
+                loggedOutUser.onLoggedOut();
             }
         });
 

@@ -26,7 +26,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.stasyorl.recipeapp.Listeners.UserLoggedIn;
 import com.stasyorl.recipeapp.MainActivity;
+import com.stasyorl.recipeapp.Models.UserModel;
 import com.stasyorl.recipeapp.R;
 import com.stasyorl.recipeapp.UsersList;
 
@@ -47,8 +49,15 @@ public class UserLoginFragment extends Fragment {
     FirebaseAuth mAuth;
     FirebaseUser mUser;
 
+    UserModel userModel;
+    UserLoggedIn userLoggedIn;
 
-    public ArrayList<String> users = new ArrayList<>();
+    public UserLoginFragment(UserLoggedIn userLoggedIn) {
+        this.userLoggedIn = userLoggedIn;
+    }
+
+    public UserLoginFragment() {
+    }
 
     @Nullable
     @Override
@@ -92,7 +101,8 @@ public class UserLoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startLogin();
-                ((MainActivity) getActivity()).onResume();
+                userLoggedIn.onLoggedIn();
+
 //                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 //                String userId = user.getUid();
 //
@@ -106,9 +116,23 @@ public class UserLoginFragment extends Fragment {
 
             }
         });
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(mUser!=null){
+            String userId = mUser.getUid();
+            userModel = new UserModel();
+            if(userId!=null){
+                userModel.setUserId(userId);
+            }else{
+                userModel.setUserId(null);
+            }
+        }
 
         return view;
-    }
+        }
+
+
+
+
 
     //REALTIME DATABASE
 //                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -150,7 +174,7 @@ public class UserLoginFragment extends Fragment {
             }else {
                 mAuth.signInWithEmailAndPassword(registerEmail, loginPassword).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
-                        Toast.makeText(getContext(), "SIGNED IN SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "SIGNED IN SUCCESSFULLY", Toast.LENGTH_SHORT).show();
                         closeWindow(UserLoginFragment.this);
 
                     }
