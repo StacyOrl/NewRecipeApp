@@ -84,6 +84,7 @@ public class FavouritesFragment extends Fragment {
             }
         };
 
+
         signUp = view.findViewById(R.id.sign_upText);
         logIn = view.findViewById(R.id.login_text);
         closeButton = view.findViewById(R.id.imageView_close);
