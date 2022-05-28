@@ -112,10 +112,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-//        userId = user.getUid();
 
-        if(user!=null){
-            if(userId!=null){
+        if(user==null){
+            userId=null;
+        }else{
+            userId = user.getUid();
+        }
+
+
+        if(userId!=null){
                 imageView_user_pic.setOnClickListener(view -> {
 //
                     getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
@@ -135,45 +140,24 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
                         fragmentContainer.setVisibility(View.VISIBLE);
                     }
                 });
+            }else {
+            imageView_user_pic.setOnClickListener(view -> {
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+                mainScreen.setVisibility(View.GONE);
+                fragmentContainer.setVisibility(View.VISIBLE);
 
-            }else{
-                imageView_user_pic.setOnClickListener(view -> {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+
+            });
+
+            favourite_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
                     mainScreen.setVisibility(View.GONE);
                     fragmentContainer.setVisibility(View.VISIBLE);
-
-
-                });
-
-                favourite_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
-                        mainScreen.setVisibility(View.GONE);
-                        fragmentContainer.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
+                }
+            });
         }
-//        else{
-//            imageView_user_pic.setOnClickListener(view -> {
-//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-//                mainScreen.setVisibility(View.GONE);
-//                fragmentContainer.setVisibility(View.VISIBLE);
-//
-//
-//            });
-//
-//            favourite_button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-//                }
-//            });
-//        }
-
 
         dialog = new ProgressDialog(this);
         dialog.setTitle("Loading...");
@@ -217,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
 
     @Override
     public void onResume() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         super.onResume();
 
 
@@ -317,8 +300,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
 
 
     @Override
-    public void onUserChanged(String newUserId) {
-        user = FirebaseAuth.getInstance().getCurrentUser();
+    public void onUserChanged(FirebaseUser mUser, String newUserId) {
+        user = mUser;
         userId = newUserId;
         randomRecipeResponseListener = new RandomRecipeResponseListener() {
             @Override

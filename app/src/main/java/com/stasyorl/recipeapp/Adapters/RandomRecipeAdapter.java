@@ -59,16 +59,10 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
             holder.imageView_food.setImageResource(R.mipmap.ic_no_photo_foreground);
         }
 
-//        options = ActivityOptions.makeSceneTransitionAnimation(
-//                (Activity)context, new Pair<View, String>(holder.imageView_food, "animImage"));
-
         holder.random_list_container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onRecipeClicked(String.valueOf(list.get(holder.getAdapterPosition()).id));
-
-
-//                context.startActivity(intent, options.toBundle());
             }
         });
 

@@ -125,7 +125,7 @@ public class UserRegistrationFragment extends Fragment{
                     mUser = mAuth.getCurrentUser();
 
                     Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY"+mUser.getUid(), Toast.LENGTH_SHORT).show();
-                    ((MainActivity)getActivity()).onUserChanged(mUser.getUid());
+                    ((MainActivity)getActivity()).onUserChanged(mUser, mUser.getUid());
                     closeWindow(UserRegistrationFragment.this);
                 }else{
                     String exception = task.getException().toString();
