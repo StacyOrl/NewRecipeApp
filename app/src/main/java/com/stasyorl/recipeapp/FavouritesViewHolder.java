@@ -38,16 +38,6 @@ public class FavouritesViewHolder extends RecyclerView.ViewHolder{
         fvrt_button = itemView.findViewById(R.id.fvrt_button);
         fav_image = itemView.findViewById(R.id.fav_image);
 
-
-
-
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mClickListener.onItemClick(v, getAdapterPosition());
-//
-//                }
-//            });
     }
     public void setItem(String title, String likes, String servings, String time, String image){
         textView_title.setText(title);
@@ -78,14 +68,5 @@ public class FavouritesViewHolder extends RecyclerView.ViewHolder{
             }
         });
     }
-//        FavouritesViewHolder.ClickListener mClickListener;
 
-    //Interface to send callbacks...
-//        public interface ClickListener{
-//             void onItemClick(View view, int position);
-//        }
-//
-//        public void setOnClickListener(FavouritesViewHolder.ClickListener clickListener){
-//            mClickListener = clickListener;
-//        }
 }
