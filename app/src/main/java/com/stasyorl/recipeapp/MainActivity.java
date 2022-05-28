@@ -109,7 +109,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null){
+        String userId = user.getUid();
+        if(userId!=null){
             imageView_user_pic.setOnClickListener(view -> {
 //
                 getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
@@ -129,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                     fragmentContainer.setVisibility(View.VISIBLE);
                 }
             });
+
+        }else{
             imageView_user_pic.setOnClickListener(view -> {
                 getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
                 mainScreen.setVisibility(View.GONE);
