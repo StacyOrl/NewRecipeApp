@@ -39,14 +39,11 @@ import com.stasyorl.recipeapp.Fragments.UserLoginFragment;
 import com.stasyorl.recipeapp.Fragments.UserRegistrationFragment;
 import com.stasyorl.recipeapp.Listeners.AddToFavListener;
 import com.stasyorl.recipeapp.Listeners.CategoryListener;
-import com.stasyorl.recipeapp.Listeners.LoggedOutUser;
 import com.stasyorl.recipeapp.Listeners.RandomRecipeResponseListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
-import com.stasyorl.recipeapp.Listeners.UserLoggedIn;
 import com.stasyorl.recipeapp.Models.CategoryModel;
 import com.stasyorl.recipeapp.Models.RandomRecipeApiResponse;
 import com.stasyorl.recipeapp.Models.Recipe;
-import com.stasyorl.recipeapp.Models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
 
     FirebaseUser user;
-    UserModel uSerModel;
 
 
     public LinearLayout getMainScreen() {
@@ -100,16 +96,20 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        registrationFragment = new UserRegistrationFragment();
+        loginFragment = new UserLoginFragment();
+        existingUserFragment = new ExistingUserFragment();
+        fragmentContainer = findViewById(R.id.fragmentContainer);
+        mainScreen = findViewById(R.id.main_screen);
+        imageView_user_pic = findViewById(R.id.imageView_user_pic);
+        favouritesFragment = new FavouritesFragment();
+        favourite_button = findViewById(R.id.imageView_favourites);
+        emptyFavouriteFragment = new EmptyFavouriteFragment();
 
-        Toast.makeText(this, "ONCREATE", Toast.LENGTH_SHORT).show();
+        favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-        findViews();
-
-
-        userId();
-
-//        user = FirebaseAuth.getInstance().getCurrentUser();
-        if(userId()!=null || user!=null){
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null){
             imageView_user_pic.setOnClickListener(view -> {
 //
                 getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
@@ -136,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 //
                 getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
                 mainScreen.setVisibility(View.GONE);
-                MainActivity.this.onPause();
                 fragmentContainer.setVisibility(View.VISIBLE);
 
 
@@ -147,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                 public void onClick(View view) {
                     getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
                     mainScreen.setVisibility(View.GONE);
-                    MainActivity.this.onPause();
                     fragmentContainer.setVisibility(View.VISIBLE);
                 }
             });
@@ -193,12 +191,12 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
 
 
-
+        dialog = new ProgressDialog(this);
         dialog.setTitle("Loading...");
 
 
 
-
+        searchView = findViewById(R.id.searchView_home);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -217,6 +215,10 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
 
 //
+        manager = new RequestManager(this);
+
+        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
+        recycle_category = findViewById(R.id.category_recycler);
         recycle_category.setHasFixedSize(true);
         recycle_category.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
         categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
@@ -235,88 +237,93 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        Toast.makeText(this, "STOP", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onResume() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         super.onResume();
 
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        userId();
-        findViews();
-
-        if(userId()!=null || user!=null){
-            imageView_user_pic.setOnClickListener(view -> {
-//
-                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
-                mainScreen.setVisibility(View.GONE);
-                MainActivity.this.onPause();
-                fragmentContainer.setVisibility(View.VISIBLE);
-
-
-            });
-
-            favourite_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
-                    mainScreen.setVisibility(View.GONE);
-                    MainActivity.this.onPause();
-                    fragmentContainer.setVisibility(View.VISIBLE);
-                }
-            });
-        }else{
-            //UNCOMMENT THIS IN CASE IT DOESNT WORK
-//            user = FirebaseAuth.getInstance().getCurrentUser();
-            imageView_user_pic.setOnClickListener(view -> {
-//
-                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-                mainScreen.setVisibility(View.GONE);
-                MainActivity.this.onPause();
-                fragmentContainer.setVisibility(View.VISIBLE);
-
-
-            });
-
-            favourite_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
-                    mainScreen.setVisibility(View.GONE);
-                    MainActivity.this.onPause();
-                    fragmentContainer.setVisibility(View.VISIBLE);
-                }
-            });
-        }
-
 
         Toast.makeText(this, "RESUME", Toast.LENGTH_SHORT).show();
-    }
 
-    void findViews(){
+//        if(user!=null){
+//            imageView_user_pic.setOnClickListener(view -> {
+////
+//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
+//                mainScreen.setVisibility(View.GONE);
+//                MainActivity.this.onPause();
+//                fragmentContainer.setVisibility(View.VISIBLE);
+//
+//
+//            });
+//
+//            favourite_button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    MainActivity.this.onPause();
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//                }
+//            });
+//        }else{
+//            //UNCOMMENT THIS IN CASE IT DOESNT WORK
+////            user = FirebaseAuth.getInstance().getCurrentUser();
+//            imageView_user_pic.setOnClickListener(view -> {
+////
+//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+//                mainScreen.setVisibility(View.GONE);
+//                fragmentContainer.setVisibility(View.VISIBLE);
+//
+//
+//            });
+//
+//            favourite_button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
+//                    mainScreen.setVisibility(View.GONE);
+//                    fragmentContainer.setVisibility(View.VISIBLE);
+//                }
+//            });
+//        }
+//
+//
+//        dialog = new ProgressDialog(this);
+//        dialog.setTitle("Loading...");
+//
+//
+//
+//        searchView = findViewById(R.id.searchView_home);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                tags.clear();
+//                tags.add(query);
+//                manager.getRandomRecipes(randomRecipeResponseListener, tags);
+//                dialog.show();
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
+//
+//
+////
+//        manager = new RequestManager(this);
+//
+//        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
+//        recycle_category = findViewById(R.id.category_recycler);
+//        recycle_category.setHasFixedSize(true);
+//        recycle_category.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+//        categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
+//        recycle_category.setAdapter(categoryAdapter);
+//        onCategoryClicked(0);
+//
 
-        registrationFragment = new UserRegistrationFragment();
-        loginFragment = new UserLoginFragment(userLoggedIn);
-        existingUserFragment = new ExistingUserFragment(loggedOutUser);
-        favouritesFragment = new FavouritesFragment();
-        emptyFavouriteFragment = new EmptyFavouriteFragment();
 
-        fragmentContainer = findViewById(R.id.fragmentContainer);
-        mainScreen = findViewById(R.id.main_screen);
-        imageView_user_pic = findViewById(R.id.imageView_user_pic);
-        favourite_button = findViewById(R.id.imageView_favourites);
-        searchView = findViewById(R.id.searchView_home);
-        recycle_category = findViewById(R.id.category_recycler);
-
-        favDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        dialog = new ProgressDialog(this);
-
-        manager = new RequestManager(this);
-        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
     }
 
     private final RandomRecipeResponseListener randomRecipeResponseListener = new RandomRecipeResponseListener() {
@@ -340,12 +347,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         }
     };
 
-    private String userId(){
-        uSerModel = new UserModel();
-        String userId = uSerModel.getUserId();
 
-        return userId;
-    }
 
     private ArrayList<CategoryModel> createData(String[] array) {
         ArrayList<CategoryModel> models = new ArrayList<>();
@@ -355,33 +357,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         }
 
         return models;
-    }
-
-    public LoggedOutUser loggedOutUser = new LoggedOutUser() {
-        @Override
-        public void onLoggedOut() {
-            user = FirebaseAuth.getInstance().getCurrentUser();
-            userId();
-            Toast.makeText(MainActivity.this, "LOGGED OUT "+userId(), Toast.LENGTH_SHORT).show();
-
-            MainActivity.this.onResume();
-        }
-    };
-
-
-
-    public UserLoggedIn userLoggedIn = new UserLoggedIn() {
-        @Override
-        public void onLoggedIn() {
-            user = FirebaseAuth.getInstance().getCurrentUser();
-            userId();
-            Toast.makeText(MainActivity.this, "LOGGED IN "+userId(), Toast.LENGTH_SHORT).show();
-
-            MainActivity.this.onResume();
-        }
-    };
-    public UserLoggedIn getUserLoggedIn() {
-        return userLoggedIn;
     }
 
 
@@ -402,35 +377,26 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     private final AddToFavListener favListener = new AddToFavListener() {
         @Override
         public void onButtonClicked(CharSequence title, CharSequence likes, CharSequence serving, CharSequence time, String image, String id) {
-            if(user==null){
-                Toast.makeText(MainActivity.this, "You have to sign up first", Toast.LENGTH_SHORT).show();
-            }else{
-                favDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.hasChild(id)){
-                            Toast.makeText(MainActivity.this, "This is already selected", Toast.LENGTH_SHORT).show();
-                        }else{
-                            if(userId()!=null){
-                                favDatabaseReference.child(userId()).child("SavedRecipes").child(id).child("title").setValue(title);
-                                favDatabaseReference.child(userId()).child("SavedRecipes").child(id).child("likes").setValue(likes);
-                                favDatabaseReference.child(userId()).child("SavedRecipes").child(id).child("serving").setValue(serving);
-                                favDatabaseReference.child(userId()).child("SavedRecipes").child(id).child("time").setValue(time);
-                                favDatabaseReference.child(userId()).child("SavedRecipes").child(id).child("image").setValue(image);
-                                favDatabaseReference.child(userId()).child("SavedRecipes").child(id).child("id").setValue(id);
-                            }else{
-                                Toast.makeText(MainActivity.this, "user id is null", Toast.LENGTH_SHORT).show();
-                            }
-                        }
+            favDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.hasChild(id)){
+                        Toast.makeText(MainActivity.this, "This is already selected", Toast.LENGTH_SHORT).show();
+                    }else{
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("title").setValue(title);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("likes").setValue(likes);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("serving").setValue(serving);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("time").setValue(time);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("image").setValue(image);
+                        favDatabaseReference.child(user.getUid()).child("SavedRecipes").child(id).child("id").setValue(id);
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-            }
-
+                }
+            });
         }
     };
 

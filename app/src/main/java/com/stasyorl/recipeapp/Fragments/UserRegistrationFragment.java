@@ -28,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Listeners.OnBackButtonListener;
-import com.stasyorl.recipeapp.Listeners.UserLoggedIn;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.R;
 import com.stasyorl.recipeapp.UsersList;
@@ -58,9 +57,7 @@ public class UserRegistrationFragment extends Fragment{
         register_name = view.findViewById(R.id.register_name);
         txt_sign_in = view.findViewById(R.id.txt_sign_in);
         close_btn = view.findViewById(R.id.imageView_close);
-
-        UserLoggedIn userLoggedIn = ((MainActivity) getActivity()).getUserLoggedIn();
-        loginFragment = new UserLoginFragment(userLoggedIn);
+        loginFragment = new UserLoginFragment();
         signUpBtn = view.findViewById(R.id.sign_up_button);
         imageView_user_pic = view.findViewById(R.id.imageView_user_pic);
         final String userName = register_name.getText().toString();
