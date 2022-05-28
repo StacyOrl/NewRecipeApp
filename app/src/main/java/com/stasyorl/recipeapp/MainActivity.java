@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     ImageView no_wifi_image, imageView_user_pic;
     ImageView favourite_button;
     FrameLayout fragmentContainer;
-    LinearLayout mainScreen;
+    LinearLayout mainScreen, errorScreen;
 
     InternetConnectorReceiver receiver;
 
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         favouritesFragment = new FavouritesFragment();
         favourite_button = findViewById(R.id.imageView_favourites);
         emptyFavouriteFragment = new EmptyFavouriteFragment();
+        errorScreen = findViewById(R.id.place_for_error);
 
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -211,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         @Override
         public void didFetch(RandomRecipeApiResponse response, String message) {
             dialog.dismiss();
+            errorScreen.setVisibility(View.VISIBLE);
             recyclerView = findViewById(R.id.recycler_random);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
@@ -224,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
             dialog.dismiss();
             no_wifi_image = findViewById(R.id.no_wifi_image);
             no_wifi_image.setVisibility(View.VISIBLE);
+            errorScreen.setVisibility(View.GONE);
 
         }
     };
@@ -301,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     public void onUserChanged(FirebaseUser mUser, String newUserId) {
         user = mUser;
         userId = newUserId;
+        MainActivity.this.onResume();
 
         if(userId!=null){
             imageView_user_pic.setOnClickListener(view -> {
@@ -347,6 +351,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
             @Override
             public void didFetch(RandomRecipeApiResponse response, String message) {
                 dialog.dismiss();
+                errorScreen.setVisibility(View.VISIBLE);
                 recyclerView = findViewById(R.id.recycler_random);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
@@ -360,6 +365,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
                 dialog.dismiss();
                 no_wifi_image = findViewById(R.id.no_wifi_image);
                 no_wifi_image.setVisibility(View.VISIBLE);
+                errorScreen.setVisibility(View.GONE);
 
             }
         };

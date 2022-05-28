@@ -94,7 +94,6 @@ public class UserLoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startLogin();
-                ((MainActivity) getActivity()).onResume();
 
             }
         });
