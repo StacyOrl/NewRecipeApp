@@ -1,6 +1,7 @@
 package com.stasyorl.recipeapp.Fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.icu.text.IDNA;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.stasyorl.recipeapp.Listeners.ChangeUser;
 import com.stasyorl.recipeapp.Listeners.OnBackButtonListener;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.R;
@@ -45,7 +47,7 @@ public class UserRegistrationFragment extends Fragment{
     FirebaseAuth mAuth;
     FirebaseUser mUser;
 
-
+    ChangeUser changeUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +62,7 @@ public class UserRegistrationFragment extends Fragment{
         loginFragment = new UserLoginFragment();
         signUpBtn = view.findViewById(R.id.sign_up_button);
         imageView_user_pic = view.findViewById(R.id.imageView_user_pic);
+
         final String userName = register_name.getText().toString();
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://recipeapp-3a3e9-default-rtdb.firebaseio.com/");
@@ -70,10 +73,12 @@ public class UserRegistrationFragment extends Fragment{
 
         signUpBtn.setOnClickListener(view1 -> {
             PerforAuth();
-            boolean userRegistered = true;
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.putExtra("userRegistered", userRegistered);
-            startActivity(intent);
+
+
+//            boolean userRegistered = true;
+//            Intent intent = new Intent(getActivity(), MainActivity.class);
+//            intent.putExtra("userRegistered", userRegistered);
+//            startActivity(intent);
 
         });
 
@@ -117,7 +122,10 @@ public class UserRegistrationFragment extends Fragment{
         }else{
             mAuth.createUserWithEmailAndPassword(registerEmail, registerPassword).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
-                    Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+                    mUser = mAuth.getCurrentUser();
+
+                    Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY"+mUser.getUid(), Toast.LENGTH_SHORT).show();
+                    ((MainActivity)getActivity()).onUserChanged(mUser.getUid());
                     closeWindow(UserRegistrationFragment.this);
                 }else{
                     String exception = task.getException().toString();

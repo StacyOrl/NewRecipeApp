@@ -51,18 +51,23 @@ public class FavouritesFragment extends Fragment {
 
     FirebaseAuth mAuth;
     FirebaseUser mUser;
+    String currentUserId;
 
     UserLoginFragment loginFragment;
     UserRegistrationFragment registrationFragment;
 
-
-    DatabaseReference databaseReference;
     Query query;
 
     boolean favChecker = false;
     RecipeFromFirebase recipeModel;
     RecipeClickListener recipeClickListener;
 
+    public FavouritesFragment(String currentUserId) {
+        this.currentUserId = currentUserId;
+    }
+
+    public FavouritesFragment() {
+    }
 
     @Nullable
     @Override
@@ -88,13 +93,10 @@ public class FavouritesFragment extends Fragment {
         noFavourites = view.findViewById(R.id.no_favourites);
         signOrLogin = view.findViewById(R.id.sign_or_login);
 
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
         favouriteRecycler = view.findViewById(R.id.favourites_list);
         favDatabaseReference = database.getReference();
-        databaseReference = FirebaseDatabase.getInstance().getReference("SavedRecipes");
 
-        query = FirebaseDatabase.getInstance().getReference().child(mUser.getUid()).child("SavedRecipes");
+        query = FirebaseDatabase.getInstance().getReference().child(currentUserId).child("SavedRecipes");
         recipeModel = new RecipeFromFirebase();
 
 
@@ -122,9 +124,6 @@ public class FavouritesFragment extends Fragment {
                 new FirebaseRecyclerAdapter<RecipeFromFirebase, FavouritesViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull RecipeFromFirebase model) {
-
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String currentUserId = user.getUid();
 
                 final String postKey = getRef(position).getKey();
 
@@ -160,13 +159,6 @@ public class FavouritesFragment extends Fragment {
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("time").setValue(time);
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("image").setValue(image);
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("id").setValue(id);
-//                                        recipeModel.setTitle(title);
-//                                        recipeModel.setTime(time);
-//                                        recipeModel.setLikes(likes);
-//                                        recipeModel.setServing(servings);
-//                                        recipeModel.setId(id);
-//                                        recipeModel.setImage(image);
-//                                        favReference.child(currentUserId).child("SavedRecipes").setValue(recipeModel);
                                         favChecker = false;
                                     }
                                 }
@@ -201,11 +193,11 @@ public class FavouritesFragment extends Fragment {
         favouriteRecycler.setAdapter(firebaseRecyclerAdapter);
 
 
-        favDatabaseReference.addValueEventListener(new ValueEventListener() {
+        favDatabaseReference.child(currentUserId).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.child(mUser.getUid()).hasChild("SavedRecipes")){
+                if(!snapshot.hasChild("SavedRecipes")){
                     favouriteRecycler.setVisibility(View.GONE);
                     noFavourites.setVisibility(View.VISIBLE);
                     textExplain = view.findViewById(R.id.simpleText);
@@ -214,9 +206,6 @@ public class FavouritesFragment extends Fragment {
                 }else{
                     noFavourites.setVisibility(View.GONE);
                     favouriteRecycler.setVisibility(View.VISIBLE);
-
-
-
                 }
 
             }
