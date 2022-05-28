@@ -55,18 +55,6 @@ public class ExistingUserFragment extends Fragment {
             }
         });
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
-//                hiUser.setText("HI "+name);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,9 +78,6 @@ public class ExistingUserFragment extends Fragment {
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
-
-//        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
-
 
     }
 }

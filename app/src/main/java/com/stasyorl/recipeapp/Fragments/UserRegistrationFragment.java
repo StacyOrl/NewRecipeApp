@@ -76,13 +76,6 @@ public class UserRegistrationFragment extends Fragment{
             startActivity(intent);
 
         });
-//
-//        mAuth = FirebaseAuth.getInstance();
-//        mUser = mAuth.getCurrentUser();
-//        if(userRegistered){
-//            databaseReference.child(mUser.getUid()).child("username").setValue(userName);
-//        }
-
 
         txt_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +99,6 @@ public class UserRegistrationFragment extends Fragment{
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
 
-//        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
     }
 
     private void PerforAuth(){
@@ -126,8 +118,6 @@ public class UserRegistrationFragment extends Fragment{
             mAuth.createUserWithEmailAndPassword(registerEmail, registerPassword).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY", Toast.LENGTH_SHORT).show();
-//                    UsersList.users.add(mUser.getUid());
-//                    databaseReference.child(mUser.getUid()).child("username").setValue(userName);
                     closeWindow(UserRegistrationFragment.this);
                 }else{
                     String exception = task.getException().toString();

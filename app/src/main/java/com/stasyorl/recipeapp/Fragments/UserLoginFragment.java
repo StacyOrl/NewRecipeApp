@@ -93,48 +93,12 @@ public class UserLoginFragment extends Fragment {
             public void onClick(View view) {
                 startLogin();
                 ((MainActivity) getActivity()).onResume();
-//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                String userId = user.getUid();
-//
-//                boolean userLoggedIn = true;
-//                Intent intent = new Intent(getActivity(), MainActivity.class);
-//                intent.putExtra("user", userId);
-//
-//
-//                intent.putExtra("userLoggedIn", userLoggedIn);
-//                startActivity(intent);
 
             }
         });
 
         return view;
     }
-
-    //REALTIME DATABASE
-//                    databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            if(snapshot.hasChild(registerEmail)){
-//                                final String getPassword = snapshot.child(registerEmail).child("password").getValue(String.class);
-//                                if(getPassword.equals(loginPassword)){
-//                                    Toast.makeText(getContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
-//                                    closeWindow(UserLoginFragment.this);
-//
-//                                }
-//                                else{
-//                                    Toast.makeText(getContext(), "Wrong e-mail or password 1234", Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                            else{
-//                                Toast.makeText(getContext(), "Wrong e-mail or password", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
 
     private void startLogin() {
         final String registerEmail = login_email.getText().toString();
@@ -163,8 +127,6 @@ public class UserLoginFragment extends Fragment {
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
-
-//        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
 
 
     }

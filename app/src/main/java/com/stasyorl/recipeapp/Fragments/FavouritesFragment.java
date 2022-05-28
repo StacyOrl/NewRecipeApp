@@ -28,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.stasyorl.recipeapp.Adapters.FavouritesAdapter;
 import com.stasyorl.recipeapp.FavouritesViewHolder;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.MainActivity;
@@ -42,7 +41,6 @@ import java.util.ArrayList;
 
 public class FavouritesFragment extends Fragment {
     RecyclerView favouriteRecycler;
-    FavouritesAdapter favouritesAdapter;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference favDatabaseReference;
@@ -64,9 +62,6 @@ public class FavouritesFragment extends Fragment {
     boolean favChecker = false;
     RecipeFromFirebase recipeModel;
     RecipeClickListener recipeClickListener;
-
-
-    int totalSize;
 
 
     @Nullable
@@ -253,39 +248,11 @@ public class FavouritesFragment extends Fragment {
             }
         });
     }
-//    @Override
-//    public void onStart()
-//    {
-//        super.onStart();
-//        favouritesAdapter.startListening();
-//    }
-//
-//    @Override
-//    public void onStop()
-//    {
-//        super.onStop();
-//        favouritesAdapter.stopListening();
-//    }
+
     public void closeWindow(Fragment fragment) {
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
-
-//        final RecipeClickListener recipeClickListener = new RecipeClickListener() {
-//            @Override
-//            public void onRecipeClicked(String id) {
-//
-//                Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-//                intent.putExtra("id", id);
-//
-//                startActivity(intent);
-//
-//
-//
-//            }
-//        };
-
-//        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
 
 
     }

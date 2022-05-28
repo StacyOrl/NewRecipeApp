@@ -129,11 +129,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                     fragmentContainer.setVisibility(View.VISIBLE);
                 }
             });
-        }else{
-            //UNCOMMENT THIS IN CASE IT DOESNT WORK
-//            user = FirebaseAuth.getInstance().getCurrentUser();
             imageView_user_pic.setOnClickListener(view -> {
-//
                 getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
                 mainScreen.setVisibility(View.GONE);
                 fragmentContainer.setVisibility(View.VISIBLE);
@@ -150,46 +146,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
                 }
             });
         }
-
-
-//
-//        if(user == null){
-//            imageView_user_pic = findViewById(R.id.imageView_user_pic);
-//
-//            imageView_user_pic.setOnClickListener(view -> {
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-//            });
-//            favourite_button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-//                }
-//            });
-//        }else{
-//            imageView_user_pic.setOnClickListener(view -> {
-//
-//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
-//                mainScreen.setVisibility(View.GONE);
-//                fragmentContainer.setVisibility(View.VISIBLE);
-//
-//
-//            });
-//
-//            favourite_button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-//                }
-//            });
-//        }
-
-
 
         dialog = new ProgressDialog(this);
         dialog.setTitle("Loading...");
@@ -213,8 +169,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
             }
         });
 
-
-//
         manager = new RequestManager(this);
 
         categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
@@ -224,9 +178,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
         categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
         recycle_category.setAdapter(categoryAdapter);
         onCategoryClicked(0);
-
-
-
 
     }
 
@@ -244,85 +195,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 
 
         Toast.makeText(this, "RESUME", Toast.LENGTH_SHORT).show();
-
-//        if(user!=null){
-//            imageView_user_pic.setOnClickListener(view -> {
-////
-//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
-//                mainScreen.setVisibility(View.GONE);
-//                MainActivity.this.onPause();
-//                fragmentContainer.setVisibility(View.VISIBLE);
-//
-//
-//            });
-//
-//            favourite_button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, favouritesFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    MainActivity.this.onPause();
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-//                }
-//            });
-//        }else{
-//            //UNCOMMENT THIS IN CASE IT DOESNT WORK
-////            user = FirebaseAuth.getInstance().getCurrentUser();
-//            imageView_user_pic.setOnClickListener(view -> {
-////
-//                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-//                mainScreen.setVisibility(View.GONE);
-//                fragmentContainer.setVisibility(View.VISIBLE);
-//
-//
-//            });
-//
-//            favourite_button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-//                }
-//            });
-//        }
-//
-//
-//        dialog = new ProgressDialog(this);
-//        dialog.setTitle("Loading...");
-//
-//
-//
-//        searchView = findViewById(R.id.searchView_home);
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                tags.clear();
-//                tags.add(query);
-//                manager.getRandomRecipes(randomRecipeResponseListener, tags);
-//                dialog.show();
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
-//
-//
-////
-//        manager = new RequestManager(this);
-//
-//        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
-//        recycle_category = findViewById(R.id.category_recycler);
-//        recycle_category.setHasFixedSize(true);
-//        recycle_category.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-//        categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
-//        recycle_category.setAdapter(categoryAdapter);
-//        onCategoryClicked(0);
-//
-
 
     }
 
