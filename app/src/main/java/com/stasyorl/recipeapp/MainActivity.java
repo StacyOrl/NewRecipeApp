@@ -94,15 +94,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        registrationFragment = new UserRegistrationFragment();
-//        loginFragment = new UserLoginFragment();
-//        existingUserFragment = new ExistingUserFragment();
+        registrationFragment = new UserRegistrationFragment();
+        loginFragment = new UserLoginFragment();
+        existingUserFragment = new ExistingUserFragment();
         fragmentContainer = findViewById(R.id.fragmentContainer);
         mainScreen = findViewById(R.id.main_screen);
         imageView_user_pic = findViewById(R.id.imageView_user_pic);
         favouritesFragment = new FavouritesFragment();
         favourite_button = findViewById(R.id.imageView_favourites);
-//        emptyFavouriteFragment = new EmptyFavouriteFragment();
+        emptyFavouriteFragment = new EmptyFavouriteFragment();
 
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -125,18 +125,18 @@ public class MainActivity extends AppCompatActivity implements CategoryListener{
 //        }
 
 
-//            imageView_user_pic.setOnClickListener(view -> {
-//
-//                if(user==null){
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-//                }else{
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
-//                    mainScreen.setVisibility(View.GONE);
-//                    fragmentContainer.setVisibility(View.VISIBLE);
-//                }
-//            });
+            imageView_user_pic.setOnClickListener(view -> {
+
+                if(user==null){
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, registrationFragment).commit();
+                    mainScreen.setVisibility(View.GONE);
+                    fragmentContainer.setVisibility(View.VISIBLE);
+                }else{
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, existingUserFragment).commit();
+                    mainScreen.setVisibility(View.GONE);
+                    fragmentContainer.setVisibility(View.VISIBLE);
+                }
+            });
 
             favourite_button.setOnClickListener(new View.OnClickListener() {
                 @Override
