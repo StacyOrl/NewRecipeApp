@@ -38,16 +38,6 @@ public class FavouritesViewHolder extends RecyclerView.ViewHolder{
         fvrt_button = itemView.findViewById(R.id.fvrt_button);
         fav_image = itemView.findViewById(R.id.fav_image);
 
-
-
-
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mClickListener.onItemClick(v, getAdapterPosition());
-//
-//                }
-//            });
     }
     public void setItem(String title, String likes, String servings, String time, String image){
         textView_title.setText(title);
@@ -56,6 +46,10 @@ public class FavouritesViewHolder extends RecyclerView.ViewHolder{
         textView_servings.setText(servings);
         textView_time.setText(time);
         Picasso.get().load(image).into(imageView_food);
+        if (imageView_food.getDrawable() == null || image == null){
+            imageView_food.setImageResource(R.mipmap.ic_no_photo_foreground);
+        }
+
         fav_image.setImageResource(R.drawable.ic_checked);
 
     }
@@ -78,14 +72,5 @@ public class FavouritesViewHolder extends RecyclerView.ViewHolder{
             }
         });
     }
-//        FavouritesViewHolder.ClickListener mClickListener;
 
-    //Interface to send callbacks...
-//        public interface ClickListener{
-//             void onItemClick(View view, int position);
-//        }
-//
-//        public void setOnClickListener(FavouritesViewHolder.ClickListener clickListener){
-//            mClickListener = clickListener;
-//        }
 }

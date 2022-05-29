@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.internal.zzx;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +34,14 @@ public class ExistingUserFragment extends Fragment {
     ExistingUserFragment existingUserFragment;
     UserRegistrationFragment registrationFragment;
     FavouritesFragment favouritesFragment;
+    String currentUserId;
+
+    public ExistingUserFragment() {
+    }
+
+    public ExistingUserFragment(String currentUserId) {
+        this.currentUserId = currentUserId;
+    }
 
     @Nullable
     @Override
@@ -55,23 +64,13 @@ public class ExistingUserFragment extends Fragment {
             }
         });
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                String name = (String) snapshot.child(mUser.getUid()).child("username").getValue();
-//                hiUser.setText("HI "+name);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
+                mUser = FirebaseAuth.getInstance().getCurrentUser();
+                ((MainActivity)getActivity()).onUserChanged(mUser, null);
                 getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();
             }
         });
@@ -79,7 +78,7 @@ public class ExistingUserFragment extends Fragment {
         savedRecipes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, favouritesFragment).commit();
+                getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new FavouritesFragment(currentUserId)).commit();
             }
         });
 
@@ -90,9 +89,6 @@ public class ExistingUserFragment extends Fragment {
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
-
-//        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
-
 
     }
 }

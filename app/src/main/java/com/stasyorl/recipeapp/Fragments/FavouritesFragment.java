@@ -28,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.stasyorl.recipeapp.Adapters.FavouritesAdapter;
 import com.stasyorl.recipeapp.FavouritesViewHolder;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
 import com.stasyorl.recipeapp.MainActivity;
@@ -42,7 +41,6 @@ import java.util.ArrayList;
 
 public class FavouritesFragment extends Fragment {
     RecyclerView favouriteRecycler;
-    FavouritesAdapter favouritesAdapter;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference favDatabaseReference;
@@ -53,33 +51,29 @@ public class FavouritesFragment extends Fragment {
 
     FirebaseAuth mAuth;
     FirebaseUser mUser;
+    String currentUserId;
 
     UserLoginFragment loginFragment;
     UserRegistrationFragment registrationFragment;
 
-
-    DatabaseReference databaseReference;
     Query query;
 
     boolean favChecker = false;
     RecipeFromFirebase recipeModel;
     RecipeClickListener recipeClickListener;
 
+    public FavouritesFragment(String currentUserId) {
+        this.currentUserId = currentUserId;
+    }
 
-    int totalSize;
-
+    public FavouritesFragment() {
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favourites_fragment, container, false);
 
-        RecipeClickListener listener = new RecipeClickListener() {
-            @Override
-            public void onRecipeClicked(String id) {
-
-            }
-        };
         recipeClickListener = new RecipeClickListener() {
             @Override
             public void onRecipeClicked(String id) {
@@ -90,6 +84,7 @@ public class FavouritesFragment extends Fragment {
             }
         };
 
+
         signUp = view.findViewById(R.id.sign_upText);
         logIn = view.findViewById(R.id.login_text);
         closeButton = view.findViewById(R.id.imageView_close);
@@ -99,13 +94,10 @@ public class FavouritesFragment extends Fragment {
         noFavourites = view.findViewById(R.id.no_favourites);
         signOrLogin = view.findViewById(R.id.sign_or_login);
 
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
         favouriteRecycler = view.findViewById(R.id.favourites_list);
         favDatabaseReference = database.getReference();
-        databaseReference = FirebaseDatabase.getInstance().getReference("SavedRecipes");
 
-        query = FirebaseDatabase.getInstance().getReference().child(mUser.getUid()).child("SavedRecipes");
+        query = FirebaseDatabase.getInstance().getReference().child(currentUserId).child("SavedRecipes");
         recipeModel = new RecipeFromFirebase();
 
 
@@ -121,31 +113,6 @@ public class FavouritesFragment extends Fragment {
 
 
 
-        favDatabaseReference.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.child(mUser.getUid()).hasChild("SavedRecipes")){
-                    favouriteRecycler.setVisibility(View.GONE);
-                    noFavourites.setVisibility(View.VISIBLE);
-                    textExplain = view.findViewById(R.id.simpleText);
-                    signOrLogin.setVisibility(View.INVISIBLE);
-                    textExplain.setText("You haven't added your recipes yet");
-                }else{
-                    noFavourites.setVisibility(View.GONE);
-                    favouriteRecycler.setVisibility(View.VISIBLE);
-
-
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 
         favouriteRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -159,9 +126,6 @@ public class FavouritesFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull FavouritesViewHolder holder, int position, @NonNull RecipeFromFirebase model) {
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String currentUserId = user.getUid();
-
                 final String postKey = getRef(position).getKey();
 
                 holder.setItem(model.getTitle(), model.getLikes(), model.getServing(), model.getTime(), model.getImage());
@@ -172,7 +136,6 @@ public class FavouritesFragment extends Fragment {
                 String time = getItem(position).getTime();
                 String image = getItem(position).getImage();
                 String id = getItem(position).getId();
-
 
 
                 holder.favouriteChecker(id, currentUserId);
@@ -196,13 +159,6 @@ public class FavouritesFragment extends Fragment {
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("time").setValue(time);
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("image").setValue(image);
                                         favReference.child(currentUserId).child("SavedRecipes").child(id).child("id").setValue(id);
-//                                        recipeModel.setTitle(title);
-//                                        recipeModel.setTime(time);
-//                                        recipeModel.setLikes(likes);
-//                                        recipeModel.setServing(servings);
-//                                        recipeModel.setId(id);
-//                                        recipeModel.setImage(image);
-//                                        favReference.child(currentUserId).child("SavedRecipes").setValue(recipeModel);
                                         favChecker = false;
                                     }
                                 }
@@ -222,6 +178,7 @@ public class FavouritesFragment extends Fragment {
                         recipeClickListener.onRecipeClicked(id);
                     }
                 });
+
             }
 
             @NonNull
@@ -235,6 +192,30 @@ public class FavouritesFragment extends Fragment {
         };
         firebaseRecyclerAdapter.startListening();
         favouriteRecycler.setAdapter(firebaseRecyclerAdapter);
+
+
+        favDatabaseReference.child(currentUserId).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.hasChild("SavedRecipes")){
+                    favouriteRecycler.setVisibility(View.GONE);
+                    noFavourites.setVisibility(View.VISIBLE);
+                    textExplain = view.findViewById(R.id.simpleText);
+                    signOrLogin.setVisibility(View.INVISIBLE);
+                    textExplain.setText("You haven't added your recipes yet");
+                }else{
+                    noFavourites.setVisibility(View.GONE);
+                    favouriteRecycler.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         return view;
     }
@@ -257,39 +238,11 @@ public class FavouritesFragment extends Fragment {
             }
         });
     }
-//    @Override
-//    public void onStart()
-//    {
-//        super.onStart();
-//        favouritesAdapter.startListening();
-//    }
-//
-//    @Override
-//    public void onStop()
-//    {
-//        super.onStop();
-//        favouritesAdapter.stopListening();
-//    }
+
     public void closeWindow(Fragment fragment) {
         getParentFragmentManager().beginTransaction().remove(fragment).commit();
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
-
-//        final RecipeClickListener recipeClickListener = new RecipeClickListener() {
-//            @Override
-//            public void onRecipeClicked(String id) {
-//
-//                Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
-//                intent.putExtra("id", id);
-//
-//                startActivity(intent);
-//
-//
-//
-//            }
-//        };
-
-//        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
 
 
     }

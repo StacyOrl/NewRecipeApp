@@ -1,6 +1,8 @@
 package com.stasyorl.recipeapp.Fragments;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.stasyorl.recipeapp.Listeners.ChangeUser;
 import com.stasyorl.recipeapp.Listeners.OnBackButtonListener;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.R;
@@ -44,8 +47,7 @@ public class UserRegistrationFragment extends Fragment{
     FirebaseAuth mAuth;
     FirebaseUser mUser;
 
-    boolean userRegistered = false;
-
+    ChangeUser changeUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +62,7 @@ public class UserRegistrationFragment extends Fragment{
         loginFragment = new UserLoginFragment();
         signUpBtn = view.findViewById(R.id.sign_up_button);
         imageView_user_pic = view.findViewById(R.id.imageView_user_pic);
+
         final String userName = register_name.getText().toString();
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://recipeapp-3a3e9-default-rtdb.firebaseio.com/");
@@ -70,50 +73,14 @@ public class UserRegistrationFragment extends Fragment{
 
         signUpBtn.setOnClickListener(view1 -> {
             PerforAuth();
-            userRegistered = true;
 
-            //REALTIME DATABASE
-//            final String registerEmail = register_email.getText().toString();
-//            final String registerPassword = register_password.getText().toString();
-//            final String confirmPassword = register_confirm_password.getText().toString();
-//
-//            if(registerEmail.isEmpty() || registerPassword.isEmpty() || confirmPassword.isEmpty()) {
-//                Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
-//            }
-//            else if(!registerPassword.equals(confirmPassword)){
-//                Toast.makeText(getContext(), "Passwords are not matching", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            else{
-//                databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        if(snapshot.hasChild(registerEmail)){
-//                            Toast.makeText(getContext(), "This email is already registered", Toast.LENGTH_SHORT).show();
-//                        }
-//                        else{
-//                            databaseReference.child("users").child(registerEmail).child("email").setValue(registerEmail);
-//                            databaseReference.child("users").child(registerEmail).child("password").setValue(registerPassword);
-//
-//                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
-//                            closeWindow(UserRegistrationFragment.this);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
-//            }
+
+//            boolean userRegistered = true;
+//            Intent intent = new Intent(getActivity(), MainActivity.class);
+//            intent.putExtra("userRegistered", userRegistered);
+//            startActivity(intent);
+
         });
-//
-//        mAuth = FirebaseAuth.getInstance();
-//        mUser = mAuth.getCurrentUser();
-//        if(userRegistered){
-//            databaseReference.child(mUser.getUid()).child("username").setValue(userName);
-//        }
-
 
         txt_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +104,6 @@ public class UserRegistrationFragment extends Fragment{
         ((MainActivity) getActivity()).getMainScreen().setVisibility(View.VISIBLE);
         ((MainActivity) getActivity()).getFragmentContainer().setVisibility(View.GONE);
 
-//        imageView_user_pic.setImageResource(R.drawable.user_profile_pic);
     }
 
     private void PerforAuth(){
@@ -156,9 +122,10 @@ public class UserRegistrationFragment extends Fragment{
         }else{
             mAuth.createUserWithEmailAndPassword(registerEmail, registerPassword).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
-                    Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY", Toast.LENGTH_SHORT).show();
-//                    UsersList.users.add(mUser.getUid());
-//                    databaseReference.child(mUser.getUid()).child("username").setValue(userName);
+                    mUser = mAuth.getCurrentUser();
+
+                    Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY"+mUser.getUid(), Toast.LENGTH_SHORT).show();
+                    ((MainActivity)getActivity()).onUserChanged(mUser, mUser.getUid());
                     closeWindow(UserRegistrationFragment.this);
                 }else{
                     String exception = task.getException().toString();
