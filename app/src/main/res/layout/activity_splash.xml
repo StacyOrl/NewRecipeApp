@@ -23,7 +23,8 @@
         android:text="Find Your Recipe"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:textSize="50sp"
+        android:textSize="48sp"
+        android:textStyle="bold"
         android:textColor="#DAD017"
         app:layout_constraintTop_toBottomOf="@+id/animation_view" />
 
