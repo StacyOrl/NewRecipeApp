@@ -112,7 +112,7 @@ public class UserLoginFragment extends Fragment {
 
             if (!registerEmail.matches(emailPattern)) {
                 login_email.setError("Enter correct email");
-            }else {
+            } else {
                 mAuth.signInWithEmailAndPassword(registerEmail, loginPassword).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
                         mUser = mAuth.getCurrentUser();

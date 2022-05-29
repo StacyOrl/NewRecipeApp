@@ -18,7 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Listeners.AddToFavListener;
+import com.stasyorl.recipeapp.Listeners.DeletedRecipe;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
+import com.stasyorl.recipeapp.Listeners.RemoveFromFavListener;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.Models.Recipe;
 import com.stasyorl.recipeapp.R;
@@ -31,7 +33,14 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
     RecipeClickListener listener;
     AddToFavListener favListener;
     String userId;
-//    ActivityOptions options;
+    String deletedRecipeId;
+    RemoveFromFavListener removeFromFavListener;
+    boolean isChecked = false;
+
+
+    public RemoveFromFavListener getRemoveFromFavListener() {
+        return removeFromFavListener;
+    }
 
     public RandomRecipeAdapter(Context context, List<Recipe> list, RecipeClickListener listener, AddToFavListener favListener, String userId) {
         this.context = context;
@@ -70,25 +79,48 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
             @Override
             public void onClick(View view) {
                 if(userId!=null){
-                    holder.fav_image.setImageResource(R.drawable.ic_checked);
+                    if(isChecked){
+                        holder.fav_image.setImageResource(R.drawable.ic_unchecked);
+                        isChecked = false;
+                    }else{
+                        holder.fav_image.setImageResource(R.drawable.ic_checked);
+                        isChecked = true;
+                    }
+//                    holder.fav_image.setImageResource(R.drawable.ic_checked);
+//                    isChecked = true;
                 }else{
                     holder.fav_image.setImageResource(R.drawable.ic_unchecked);
                 }
+
+
                 favListener.onButtonClicked(holder.textView_title.getText(),
                         holder.textView_likes.getText(), holder.textView_servings.getText(),
                         holder.textView_time.getText(), list.get(position).image,
                         String.valueOf(list.get(holder.getAdapterPosition()).id));
-
-
             }
         });
 
+//        removeFromFavListener = new RemoveFromFavListener() {
+//            @Override
+//            public void removeFavourite(String id) {
+//                deletedRecipeId = id;
+//
+//                if (String.valueOf(list.get(position).id).equals(deletedRecipeId)) {
+//                    notifyDataSetChanged();
+//                    holder.fav_image.setImageResource(R.drawable.ic_unchecked);
+//                }
+//            }
+//        };
+//        if(isDeleted){
+//            holder.fav_image.setImageResource(R.drawable.ic_unchecked);
+//        }
     }
 
     @Override
     public int getItemCount() {
         return list.size();
     }
+
 }
 class RandomRecipeViewHolder extends RecyclerView.ViewHolder {
 
@@ -109,8 +141,5 @@ class RandomRecipeViewHolder extends RecyclerView.ViewHolder {
         imageView_food = itemView.findViewById(R.id.imageView_food);
         fvrt_button = itemView.findViewById(R.id.fvrt_button);
         fav_image = itemView.findViewById(R.id.fav_image);
-
-
-
     }
 }

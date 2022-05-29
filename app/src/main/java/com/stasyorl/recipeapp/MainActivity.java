@@ -40,9 +40,11 @@ import com.stasyorl.recipeapp.Fragments.UserRegistrationFragment;
 import com.stasyorl.recipeapp.Listeners.AddToFavListener;
 import com.stasyorl.recipeapp.Listeners.CategoryListener;
 import com.stasyorl.recipeapp.Listeners.ChangeUser;
+import com.stasyorl.recipeapp.Listeners.DeletedRecipe;
 import com.stasyorl.recipeapp.Listeners.LoggedOutUser;
 import com.stasyorl.recipeapp.Listeners.RandomRecipeResponseListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
+import com.stasyorl.recipeapp.Listeners.RemoveFromFavListener;
 import com.stasyorl.recipeapp.Models.CategoryModel;
 import com.stasyorl.recipeapp.Models.RandomRecipeApiResponse;
 import com.stasyorl.recipeapp.Models.Recipe;
@@ -76,11 +78,14 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     FavouritesFragment favouritesFragment;
     ExistingUserFragment existingUserFragment;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     DatabaseReference favDatabaseReference, fvrt_listRef;
     Boolean favChecked = false;
     Recipe recipe;
+    ArrayList<Recipe> recipes;
     EmptyFavouriteFragment emptyFavouriteFragment;
+
+    DeletedRecipe onDelete;
 
 
     FirebaseUser user;
@@ -106,10 +111,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         fragmentContainer = findViewById(R.id.fragmentContainer);
         mainScreen = findViewById(R.id.main_screen);
         imageView_user_pic = findViewById(R.id.imageView_user_pic);
+
+
+
+
         favouritesFragment = new FavouritesFragment();
         favourite_button = findViewById(R.id.imageView_favourites);
         emptyFavouriteFragment = new EmptyFavouriteFragment();
         errorScreen = findViewById(R.id.place_for_error);
+
 
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -213,17 +223,19 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         onCategoryClicked(0);
         Toast.makeText(this, "RESUME", Toast.LENGTH_SHORT).show();
 
+
     }
 
     private RandomRecipeResponseListener randomRecipeResponseListener = new RandomRecipeResponseListener() {
         @Override
         public void didFetch(RandomRecipeApiResponse response, String message) {
             dialog.dismiss();
+            recipes = response.recipes;
             errorScreen.setVisibility(View.VISIBLE);
             recyclerView = findViewById(R.id.recycler_random);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
-            randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, response.recipes, recipeClickListener, favListener, userId);
+            randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, recipes, recipeClickListener, favListener, userId);
             recyclerView.setAdapter(randomRecipeAdapter);
         }
 
@@ -306,7 +318,21 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         dialog.show();
     }
 
-
+//    public void checkDeletedRecipe(String recipeId){
+//        database.child(userId).child("Saved Recipes").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(!snapshot.hasChild(recipeId)){
+//                    onDelete.onDelete(true);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
     @Override
     public void onUserChanged(FirebaseUser mUser, String newUserId) {
         user = mUser;
@@ -358,11 +384,12 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
             @Override
             public void didFetch(RandomRecipeApiResponse response, String message) {
                 dialog.dismiss();
+                recipes = response.recipes;
                 errorScreen.setVisibility(View.VISIBLE);
                 recyclerView = findViewById(R.id.recycler_random);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
-                randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, response.recipes, recipeClickListener, favListener, userId);
+                randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, recipes, recipeClickListener, favListener, userId);
                 recyclerView.setAdapter(randomRecipeAdapter);
             }
 

@@ -63,7 +63,7 @@ public class UserRegistrationFragment extends Fragment{
         signUpBtn = view.findViewById(R.id.sign_up_button);
         imageView_user_pic = view.findViewById(R.id.imageView_user_pic);
 
-        final String userName = register_name.getText().toString();
+
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://recipeapp-3a3e9-default-rtdb.firebaseio.com/");
 
@@ -107,10 +107,10 @@ public class UserRegistrationFragment extends Fragment{
     }
 
     private void PerforAuth(){
+        final String userName = register_name.getText().toString();
         final String registerEmail = register_email.getText().toString();
         final String registerPassword = register_password.getText().toString();
         final String confirmPassword = register_confirm_password.getText().toString();
-
 
         if(!registerEmail.matches(emailPattern)){
             register_email.setError("Enter correct email");
@@ -123,14 +123,13 @@ public class UserRegistrationFragment extends Fragment{
             mAuth.createUserWithEmailAndPassword(registerEmail, registerPassword).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     mUser = mAuth.getCurrentUser();
+                    databaseReference.child(mUser.getUid()).child("username").setValue(userName);
 
                     Toast.makeText(getContext(), "SIGNED UP SUCCESSFULLY"+mUser.getUid(), Toast.LENGTH_SHORT).show();
                     ((MainActivity)getActivity()).onUserChanged(mUser, mUser.getUid());
                     closeWindow(UserRegistrationFragment.this);
                 }else{
-                    String exception = task.getException().toString();
-                    exception = exception.substring(0, exception.indexOf(':'));
-                    Toast.makeText(getContext(), exception, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "This email is already registered", Toast.LENGTH_SHORT).show();
                 }
             });
         }

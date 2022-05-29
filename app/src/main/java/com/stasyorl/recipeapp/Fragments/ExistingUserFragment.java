@@ -57,6 +57,21 @@ public class ExistingUserFragment extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         registrationFragment = new UserRegistrationFragment();
 
+        databaseReference.child(mUser.getUid()).child("username").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String userName = (String) snapshot.getValue();
+                hiUser.setText("Hi "+userName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

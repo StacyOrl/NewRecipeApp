@@ -28,8 +28,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.stasyorl.recipeapp.Adapters.RandomRecipeAdapter;
 import com.stasyorl.recipeapp.FavouritesViewHolder;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
+import com.stasyorl.recipeapp.Listeners.RemoveFromFavListener;
 import com.stasyorl.recipeapp.MainActivity;
 import com.stasyorl.recipeapp.Models.Recipe;
 import com.stasyorl.recipeapp.Models.RecipeFromFirebase;
@@ -52,6 +54,7 @@ public class FavouritesFragment extends Fragment {
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     String currentUserId;
+    RemoveFromFavListener removeFromFavListener;
 
     UserLoginFragment loginFragment;
     UserRegistrationFragment registrationFragment;
@@ -61,6 +64,11 @@ public class FavouritesFragment extends Fragment {
     boolean favChecker = false;
     RecipeFromFirebase recipeModel;
     RecipeClickListener recipeClickListener;
+
+    public FavouritesFragment(String currentUserId, RemoveFromFavListener removeFromFavListener) {
+        this.currentUserId = currentUserId;
+        this.removeFromFavListener = removeFromFavListener;
+    }
 
     public FavouritesFragment(String currentUserId) {
         this.currentUserId = currentUserId;
@@ -227,6 +235,8 @@ public class FavouritesFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     dataSnapshot.getRef().removeValue();
+//                    removeFromFavListener.removeFavourite(id);
+//                    ((MainActivity)getActivity()).checkDeletedRecipe(id);
 
                     Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
                 }
