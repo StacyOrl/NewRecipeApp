@@ -138,7 +138,6 @@ public class FavouritesFragment extends Fragment {
                 String id = getItem(position).getId();
 
 
-
                 holder.favouriteChecker(id, currentUserId);
                 holder.fvrt_button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -179,6 +178,7 @@ public class FavouritesFragment extends Fragment {
                         recipeClickListener.onRecipeClicked(id);
                     }
                 });
+
             }
 
             @NonNull

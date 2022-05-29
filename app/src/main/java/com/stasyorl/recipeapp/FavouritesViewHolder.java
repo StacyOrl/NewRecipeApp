@@ -46,6 +46,10 @@ public class FavouritesViewHolder extends RecyclerView.ViewHolder{
         textView_servings.setText(servings);
         textView_time.setText(time);
         Picasso.get().load(image).into(imageView_food);
+        if (imageView_food.getDrawable() == null || image == null){
+            imageView_food.setImageResource(R.mipmap.ic_no_photo_foreground);
+        }
+
         fav_image.setImageResource(R.drawable.ic_checked);
 
     }
