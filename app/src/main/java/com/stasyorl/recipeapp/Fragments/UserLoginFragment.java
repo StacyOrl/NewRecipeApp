@@ -112,6 +112,7 @@ public class UserLoginFragment extends Fragment {
 
             if (!registerEmail.matches(emailPattern)) {
                 login_email.setError("Enter correct email");
+                Toast.makeText(getContext(), "Invalid email (check for spaces)", Toast.LENGTH_SHORT).show();
             } else {
                 mAuth.signInWithEmailAndPassword(registerEmail, loginPassword).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){

@@ -215,13 +215,13 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     @Override
     public void onResume() {
         super.onResume();
-        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
-        recycle_category = findViewById(R.id.category_recycler);
-        recycle_category.setHasFixedSize(true);
-        recycle_category.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
-        recycle_category.setAdapter(categoryAdapter);
-        onCategoryClicked(0);
+//        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
+//        recycle_category = findViewById(R.id.category_recycler);
+//        recycle_category.setHasFixedSize(true);
+//        recycle_category.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+//        categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
+//        recycle_category.setAdapter(categoryAdapter);
+//        onCategoryClicked(0);
 //        Toast.makeText(this, "RESUME", Toast.LENGTH_SHORT).show();
 
 
