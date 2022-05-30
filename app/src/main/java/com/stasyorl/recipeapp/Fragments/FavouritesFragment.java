@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,26 +19,18 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-import com.stasyorl.recipeapp.Adapters.RandomRecipeAdapter;
 import com.stasyorl.recipeapp.FavouritesViewHolder;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
-import com.stasyorl.recipeapp.Listeners.RemoveFromFavListener;
 import com.stasyorl.recipeapp.MainActivity;
-import com.stasyorl.recipeapp.Models.Recipe;
 import com.stasyorl.recipeapp.Models.RecipeFromFirebase;
 import com.stasyorl.recipeapp.R;
 import com.stasyorl.recipeapp.RecipeDetailsActivity;
-import com.stasyorl.recipeapp.UsersList;
-
-import java.util.ArrayList;
 
 public class FavouritesFragment extends Fragment {
     RecyclerView favouriteRecycler;
@@ -54,7 +45,6 @@ public class FavouritesFragment extends Fragment {
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     String currentUserId;
-    RemoveFromFavListener removeFromFavListener;
 
     UserLoginFragment loginFragment;
     UserRegistrationFragment registrationFragment;
@@ -64,11 +54,6 @@ public class FavouritesFragment extends Fragment {
     boolean favChecker = false;
     RecipeFromFirebase recipeModel;
     RecipeClickListener recipeClickListener;
-
-    public FavouritesFragment(String currentUserId, RemoveFromFavListener removeFromFavListener) {
-        this.currentUserId = currentUserId;
-        this.removeFromFavListener = removeFromFavListener;
-    }
 
     public FavouritesFragment(String currentUserId) {
         this.currentUserId = currentUserId;

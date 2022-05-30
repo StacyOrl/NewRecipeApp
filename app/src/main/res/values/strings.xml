@@ -27,4 +27,5 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="login"><u>LOGIN</u></string>
     <string name="sign_up"><u>SIGN UP</u></string>
+    <string name="find_your_recipe">Find Your Recipe</string>
 </resources>

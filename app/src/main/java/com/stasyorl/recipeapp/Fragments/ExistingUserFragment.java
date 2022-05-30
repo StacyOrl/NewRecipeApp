@@ -72,30 +72,17 @@ public class ExistingUserFragment extends Fragment {
 
 
 
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeWindow(ExistingUserFragment.this);
-            }
-        });
+        closeButton.setOnClickListener(view1 -> closeWindow(ExistingUserFragment.this));
 
 
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                mUser = FirebaseAuth.getInstance().getCurrentUser();
-                ((MainActivity)getActivity()).onUserChanged(mUser, null);
-                getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();
-            }
+        logOut.setOnClickListener(view12 -> {
+            FirebaseAuth.getInstance().signOut();
+            mUser = FirebaseAuth.getInstance().getCurrentUser();
+            ((MainActivity)getActivity()).onUserChanged(mUser, null);
+            getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, registrationFragment).commit();
         });
 
-        savedRecipes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new FavouritesFragment(currentUserId)).commit();
-            }
-        });
+        savedRecipes.setOnClickListener(view13 -> getParentFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new FavouritesFragment(currentUserId)).commit());
 
 
         return view;

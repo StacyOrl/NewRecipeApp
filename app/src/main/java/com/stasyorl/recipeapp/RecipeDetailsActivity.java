@@ -96,8 +96,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             if (textView_meal_source.getText() == ""){
                 textView_meal_source.setText(R.string.unknown_source);
             }
+            String summary = response.summary;
+            summary = summary.split("Try")[0];
 
-            textView_meal_summory.setText(response.summary.replace("<b>", "").
+            textView_meal_summory.setText(summary.replace("<b>", "").
                     replace("</b>", "").
                     replace("<a", "").
                     replace(">", "").
@@ -109,10 +111,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 imageView_meal_image.setImageResource(R.mipmap.ic_no_photo_foreground);
             }
 
-            //layout manager for the ingredients recyclerView
             recycler_meal_ingredients.setHasFixedSize(true);
             recycler_meal_ingredients.setLayoutManager(new LinearLayoutManager(RecipeDetailsActivity.this, LinearLayoutManager.HORIZONTAL, false));
-            //setting adapter
             ingredientsAdapter = new IngredientsAdapter(RecipeDetailsActivity.this, response.extendedIngredients);
             recycler_meal_ingredients.setAdapter(ingredientsAdapter);
 

@@ -1,7 +1,6 @@
 package com.stasyorl.recipeapp;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,15 +13,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,11 +35,8 @@ import com.stasyorl.recipeapp.Fragments.UserRegistrationFragment;
 import com.stasyorl.recipeapp.Listeners.AddToFavListener;
 import com.stasyorl.recipeapp.Listeners.CategoryListener;
 import com.stasyorl.recipeapp.Listeners.ChangeUser;
-import com.stasyorl.recipeapp.Listeners.DeletedRecipe;
-import com.stasyorl.recipeapp.Listeners.LoggedOutUser;
 import com.stasyorl.recipeapp.Listeners.RandomRecipeResponseListener;
 import com.stasyorl.recipeapp.Listeners.RecipeClickListener;
-import com.stasyorl.recipeapp.Listeners.RemoveFromFavListener;
 import com.stasyorl.recipeapp.Models.CategoryModel;
 import com.stasyorl.recipeapp.Models.RandomRecipeApiResponse;
 import com.stasyorl.recipeapp.Models.Recipe;
@@ -64,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     ProgressDialog dialog;
     RequestManager manager;
     RandomRecipeAdapter randomRecipeAdapter;
-//    RandomRecipeResponseListener randomRecipeResponseListener;
     CategoryAdapter categoryAdapter;
     RecyclerView recyclerView, recycle_category;
     ImageView no_wifi_image, imageView_user_pic;
@@ -72,21 +62,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     FrameLayout fragmentContainer;
     LinearLayout mainScreen, errorScreen;
 
-    InternetConnectorReceiver receiver;
 
     UserRegistrationFragment registrationFragment;
     UserLoginFragment loginFragment;
     FavouritesFragment favouritesFragment;
     ExistingUserFragment existingUserFragment;
 
-    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference favDatabaseReference, fvrt_listRef;
-    Boolean favChecked = false;
-    Recipe recipe;
+    DatabaseReference favDatabaseReference;
     ArrayList<Recipe> recipes;
     EmptyFavouriteFragment emptyFavouriteFragment;
-
-    DeletedRecipe onDelete;
 
 
     FirebaseUser user;
@@ -109,21 +93,16 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         registrationFragment = new UserRegistrationFragment();
         loginFragment = new UserLoginFragment();
         existingUserFragment = new ExistingUserFragment();
+        favouritesFragment = new FavouritesFragment();
+        emptyFavouriteFragment = new EmptyFavouriteFragment();
+
         fragmentContainer = findViewById(R.id.fragmentContainer);
         mainScreen = findViewById(R.id.main_screen);
         imageView_user_pic = findViewById(R.id.imageView_user_pic);
-
-
-
-
-        favouritesFragment = new FavouritesFragment();
         favourite_button = findViewById(R.id.imageView_favourites);
-        emptyFavouriteFragment = new EmptyFavouriteFragment();
         errorScreen = findViewById(R.id.place_for_error);
 
-
         favDatabaseReference = FirebaseDatabase.getInstance().getReference();
-
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(user==null){
@@ -135,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
 
         if(userId!=null){
                 imageView_user_pic.setOnClickListener(view -> {
-//
                     getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, new ExistingUserFragment(userId)).commit();
                     mainScreen.setVisibility(View.GONE);
                     MainActivity.this.onPause();
@@ -144,14 +122,11 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
 
                 });
 
-                favourite_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, new FavouritesFragment(userId)).commit();
-                        mainScreen.setVisibility(View.GONE);
-                        MainActivity.this.onPause();
-                        fragmentContainer.setVisibility(View.VISIBLE);
-                    }
+                favourite_button.setOnClickListener(view -> {
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, new FavouritesFragment(userId)).commit();
+                    mainScreen.setVisibility(View.GONE);
+                    MainActivity.this.onPause();
+                    fragmentContainer.setVisibility(View.VISIBLE);
                 });
             }else {
             imageView_user_pic.setOnClickListener(view -> {
@@ -162,13 +137,10 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
 
             });
 
-            favourite_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
-                    mainScreen.setVisibility(View.GONE);
-                    fragmentContainer.setVisibility(View.VISIBLE);
-                }
+            favourite_button.setOnClickListener(view -> {
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
+                mainScreen.setVisibility(View.GONE);
+                fragmentContainer.setVisibility(View.VISIBLE);
             });
         }
 
@@ -209,22 +181,11 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     @Override
     protected void onPause() {
         super.onPause();
-//        Toast.makeText(this, "PAUSE", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        categoryArray = MainActivity.this.getResources().getStringArray(R.array.tags);
-//        recycle_category = findViewById(R.id.category_recycler);
-//        recycle_category.setHasFixedSize(true);
-//        recycle_category.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
-//        categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
-//        recycle_category.setAdapter(categoryAdapter);
-//        onCategoryClicked(0);
-//        Toast.makeText(this, "RESUME", Toast.LENGTH_SHORT).show();
-
-
     }
 
     private RandomRecipeResponseListener randomRecipeResponseListener = new RandomRecipeResponseListener() {
@@ -264,18 +225,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     }
 
 
-    private final RecipeClickListener recipeClickListener = new RecipeClickListener() {
-        @Override
-        public void onRecipeClicked(String id) {
+    private final RecipeClickListener recipeClickListener = id -> {
 
-            Intent intent = new Intent(MainActivity.this, RecipeDetailsActivity.class);
-            intent.putExtra("id", id);
+        Intent intent = new Intent(MainActivity.this, RecipeDetailsActivity.class);
+        intent.putExtra("id", id);
 
-            startActivity(intent);
+        startActivity(intent);
 
 
 
-        }
     };
 
     private final AddToFavListener favListener = new AddToFavListener() {
@@ -327,26 +285,11 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         dialog.show();
     }
 
-//    public void checkDeletedRecipe(String recipeId){
-//        database.child(userId).child("Saved Recipes").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(!snapshot.hasChild(recipeId)){
-//                    onDelete.onDelete(true);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
     @Override
     public void onUserChanged(FirebaseUser mUser, String newUserId) {
         user = mUser;
         userId = newUserId;
-        MainActivity.this.onResume();
+        MainActivity.this.changeUi();
 
         if(userId!=null){
             imageView_user_pic.setOnClickListener(view -> {
@@ -359,14 +302,11 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
 
             });
 
-            favourite_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, new FavouritesFragment(userId)).commit();
-                    mainScreen.setVisibility(View.GONE);
-                    MainActivity.this.onPause();
-                    fragmentContainer.setVisibility(View.VISIBLE);
-                }
+            favourite_button.setOnClickListener(view -> {
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, new FavouritesFragment(userId)).commit();
+                mainScreen.setVisibility(View.GONE);
+                MainActivity.this.onPause();
+                fragmentContainer.setVisibility(View.VISIBLE);
             });
         }else {
             imageView_user_pic.setOnClickListener(view -> {
@@ -377,13 +317,10 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
 
             });
 
-            favourite_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
-                    mainScreen.setVisibility(View.GONE);
-                    fragmentContainer.setVisibility(View.VISIBLE);
-                }
+            favourite_button.setOnClickListener(view -> {
+                getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, emptyFavouriteFragment).commit();
+                mainScreen.setVisibility(View.GONE);
+                fragmentContainer.setVisibility(View.VISIBLE);
             });
         }
 
@@ -414,9 +351,29 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         };
     }
 
-//    @Override
-//    public void onLoggedOut() {
-//        user = null;
-//        userId = null;
-//    }
+    public void changeUi(){
+        randomRecipeResponseListener = new RandomRecipeResponseListener() {
+            @Override
+            public void didFetch(RandomRecipeApiResponse response, String message) {
+                dialog.dismiss();
+                recipes = response.recipes;
+                errorScreen.setVisibility(View.VISIBLE);
+                recyclerView = findViewById(R.id.recycler_random);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
+                randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, recipes, recipeClickListener, favListener, userId, favDatabaseReference);
+                recyclerView.setAdapter(randomRecipeAdapter);
+            }
+
+            @Override
+            public void didError(String message) {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                no_wifi_image = findViewById(R.id.no_wifi_image);
+                no_wifi_image.setVisibility(View.VISIBLE);
+                errorScreen.setVisibility(View.GONE);
+
+            }
+        };
+    }
 }
