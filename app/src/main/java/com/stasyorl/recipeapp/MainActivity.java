@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.stasyorl.recipeapp.Adapters.CategoryAdapter;
 import com.stasyorl.recipeapp.Adapters.RandomRecipeAdapter;
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     @Override
     protected void onPause() {
         super.onPause();
-        Toast.makeText(this, "PAUSE", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "PAUSE", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -221,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         categoryAdapter = new CategoryAdapter(MainActivity.this, createData(categoryArray),this);
         recycle_category.setAdapter(categoryAdapter);
         onCategoryClicked(0);
-        Toast.makeText(this, "RESUME", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "RESUME", Toast.LENGTH_SHORT).show();
 
 
     }
@@ -235,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
             recyclerView = findViewById(R.id.recycler_random);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
-            randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, recipes, recipeClickListener, favListener, userId);
+            randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, recipes, recipeClickListener, favListener, userId, favDatabaseReference);
             recyclerView.setAdapter(randomRecipeAdapter);
         }
 
@@ -280,35 +281,43 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
     private final AddToFavListener favListener = new AddToFavListener() {
         @Override
         public void onButtonClicked(CharSequence title, CharSequence likes, CharSequence serving, CharSequence time, String image, String id) {
-            if(userId==null){
-                Toast.makeText(MainActivity.this, "Sign up or login first", Toast.LENGTH_SHORT).show();
+
+            if(userId!=null){
+               favDatabaseReference.child(userId).child("SavedRecipes").addListenerForSingleValueEvent(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(@NonNull DataSnapshot snapshot) {
+                       if(snapshot.hasChild(id)){
+                           Query favQuery = favDatabaseReference.child(userId).child("SavedRecipes").orderByChild("id").equalTo(id);
+                           favQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                               @Override
+                               public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                   for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                       dataSnapshot.getRef().removeValue();
+                                   }
+                               }
+
+                               @Override
+                               public void onCancelled(@NonNull DatabaseError error) {
+
+                               }
+                           });
+                       }else{
+                           favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("title").setValue(title);
+                           favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("likes").setValue(likes);
+                           favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("serving").setValue(serving);
+                           favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("time").setValue(time);
+                           favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("image").setValue(image);
+                           favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("id").setValue(id);
+                       }
+                       }@Override
+                   public void onCancelled(@NonNull DatabaseError error) {
+
+                   }
+               });
             }else{
-                favDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.hasChild(id)){
-                            Toast.makeText(MainActivity.this, "This is already selected", Toast.LENGTH_SHORT).show();
-                        }else{
-                            favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("title").setValue(title);
-                            favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("likes").setValue(likes);
-                            favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("serving").setValue(serving);
-                            favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("time").setValue(time);
-                            favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("image").setValue(image);
-                            favDatabaseReference.child(userId).child("SavedRecipes").child(id).child("id").setValue(id);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                Toast.makeText(MainActivity.this, "Sign up or login first", Toast.LENGTH_SHORT).show();
             }
-
-        }
-    };
+    }};
 
     @Override
     public void onCategoryClicked(int position) {
@@ -389,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
                 recyclerView = findViewById(R.id.recycler_random);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
-                randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, recipes, recipeClickListener, favListener, userId);
+                randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, recipes, recipeClickListener, favListener, userId, favDatabaseReference);
                 recyclerView.setAdapter(randomRecipeAdapter);
             }
 

@@ -238,7 +238,7 @@ public class FavouritesFragment extends Fragment {
 //                    removeFromFavListener.removeFavourite(id);
 //                    ((MainActivity)getActivity()).checkDeletedRecipe(id);
 
-                    Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
                 }
             }
 

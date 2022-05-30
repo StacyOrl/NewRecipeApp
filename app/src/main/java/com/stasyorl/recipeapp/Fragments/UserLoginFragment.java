@@ -116,7 +116,7 @@ public class UserLoginFragment extends Fragment {
                 mAuth.signInWithEmailAndPassword(registerEmail, loginPassword).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
                         mUser = mAuth.getCurrentUser();
-                        Toast.makeText(getContext(), "SIGNED IN SUCCESSFULLY"+mUser.getUid(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "SIGNED IN SUCCESSFULLY", Toast.LENGTH_SHORT).show();
                         ((MainActivity)getActivity()).onUserChanged(mUser, mUser.getUid());
                         closeWindow(UserLoginFragment.this);
 

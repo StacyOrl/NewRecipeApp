@@ -14,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.stasyorl.recipeapp.Listeners.AddToFavListener;
 import com.stasyorl.recipeapp.Listeners.DeletedRecipe;
@@ -35,6 +38,7 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
     String userId;
     String deletedRecipeId;
     RemoveFromFavListener removeFromFavListener;
+    DatabaseReference favDatabaseReference;
     boolean isChecked = false;
 
 
@@ -42,12 +46,13 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
         return removeFromFavListener;
     }
 
-    public RandomRecipeAdapter(Context context, List<Recipe> list, RecipeClickListener listener, AddToFavListener favListener, String userId) {
+    public RandomRecipeAdapter(Context context, List<Recipe> list, RecipeClickListener listener, AddToFavListener favListener, String userId, DatabaseReference favDatabaseReference) {
         this.context = context;
         this.list = list;
         this.listener = listener;
         this.favListener = favListener;
         this.userId = userId;
+        this.favDatabaseReference = favDatabaseReference;
     }
 
     @NonNull
@@ -79,15 +84,22 @@ public class RandomRecipeAdapter extends RecyclerView.Adapter<RandomRecipeViewHo
             @Override
             public void onClick(View view) {
                 if(userId!=null){
-                    if(isChecked){
-                        holder.fav_image.setImageResource(R.drawable.ic_unchecked);
-                        isChecked = false;
-                    }else{
-                        holder.fav_image.setImageResource(R.drawable.ic_checked);
-                        isChecked = true;
-                    }
-//                    holder.fav_image.setImageResource(R.drawable.ic_checked);
-//                    isChecked = true;
+
+                    favDatabaseReference.child(userId).child("SavedRecipes").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.hasChild(list.get(position).id)){
+                                holder.fav_image.setImageResource(R.drawable.ic_checked);
+                            }else{
+                                holder.fav_image.setImageResource(R.drawable.ic_unchecked);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }else{
                     holder.fav_image.setImageResource(R.drawable.ic_unchecked);
                 }
