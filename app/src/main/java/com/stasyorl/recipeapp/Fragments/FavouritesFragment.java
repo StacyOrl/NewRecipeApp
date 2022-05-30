@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,8 +40,6 @@ public class FavouritesFragment extends Fragment {
     ImageView closeButton;
     LinearLayout signOrLogin;
 
-    FirebaseAuth mAuth;
-    FirebaseUser mUser;
     String currentUserId;
 
     UserLoginFragment loginFragment;
@@ -67,14 +63,11 @@ public class FavouritesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favourites_fragment, container, false);
 
-        recipeClickListener = new RecipeClickListener() {
-            @Override
-            public void onRecipeClicked(String id) {
-                Intent intent = new Intent(getActivity(), RecipeDetailsActivity.class);
-                intent.putExtra("id", id);
+        recipeClickListener = id -> {
+            Intent intent = new Intent(getActivity(), RecipeDetailsActivity.class);
+            intent.putExtra("id", id);
 
-                startActivity(intent);
-            }
+            startActivity(intent);
         };
 
 
@@ -97,12 +90,7 @@ public class FavouritesFragment extends Fragment {
         DatabaseReference favReference = FirebaseDatabase.getInstance().getReference();
 
 
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeWindow(FavouritesFragment.this);
-            }
-        });
+        closeButton.setOnClickListener(view1 -> closeWindow(FavouritesFragment.this));
 
 
 
@@ -132,45 +120,37 @@ public class FavouritesFragment extends Fragment {
 
 
                 holder.favouriteChecker(id, currentUserId);
-                holder.fvrt_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        favChecker = true;
-                        favReference.child(currentUserId).child("SavedRecipes").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(favChecker){
-                                    if(snapshot.hasChild(id)){
+                holder.fvrt_button.setOnClickListener(view12 -> {
+                    favChecker = true;
+                    favReference.child(currentUserId).child("SavedRecipes").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(favChecker){
+                                if(snapshot.hasChild(id)){
 //                                        snapshot.child(id).getRef().removeValue();
-                                        delete(postKey, currentUserId);
-                                        favChecker = false;
-                                    }else{
+                                    delete(postKey, currentUserId);
+                                    favChecker = false;
+                                }else{
 
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("title").setValue(title);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("likes").setValue(likes);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("serving").setValue(servings);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("time").setValue(time);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("image").setValue(image);
-                                        favReference.child(currentUserId).child("SavedRecipes").child(id).child("id").setValue(id);
-                                        favChecker = false;
-                                    }
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("title").setValue(title);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("likes").setValue(likes);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("serving").setValue(servings);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("time").setValue(time);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("image").setValue(image);
+                                    favReference.child(currentUserId).child("SavedRecipes").child(id).child("id").setValue(id);
+                                    favChecker = false;
                                 }
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                    }
+                        }
+                    });
                 });
 
-                holder.random_list_container.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        recipeClickListener.onRecipeClicked(id);
-                    }
-                });
+                holder.random_list_container.setOnClickListener(view13 -> recipeClickListener.onRecipeClicked(id));
 
             }
 
@@ -196,7 +176,7 @@ public class FavouritesFragment extends Fragment {
                     noFavourites.setVisibility(View.VISIBLE);
                     textExplain = view.findViewById(R.id.simpleText);
                     signOrLogin.setVisibility(View.INVISIBLE);
-                    textExplain.setText("You haven't added your recipes yet");
+                    textExplain.setText(R.string.no_recipe);
                 }else{
                     noFavourites.setVisibility(View.GONE);
                     favouriteRecycler.setVisibility(View.VISIBLE);
