@@ -290,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
         user = mUser;
         userId = newUserId;
         MainActivity.this.changeUi();
+        manager.getRandomRecipes(randomRecipeResponseListener, tags);
 
         if(userId!=null){
             imageView_user_pic.setOnClickListener(view -> {
@@ -323,32 +324,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListener,
                 fragmentContainer.setVisibility(View.VISIBLE);
             });
         }
-
-
-
-        randomRecipeResponseListener = new RandomRecipeResponseListener() {
-            @Override
-            public void didFetch(RandomRecipeApiResponse response, String message) {
-                dialog.dismiss();
-                recipes = response.recipes;
-                errorScreen.setVisibility(View.VISIBLE);
-                recyclerView = findViewById(R.id.recycler_random);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 1));
-                randomRecipeAdapter = new RandomRecipeAdapter(MainActivity.this, recipes, recipeClickListener, favListener, userId, favDatabaseReference);
-                recyclerView.setAdapter(randomRecipeAdapter);
-            }
-
-            @Override
-            public void didError(String message) {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-                no_wifi_image = findViewById(R.id.no_wifi_image);
-                no_wifi_image.setVisibility(View.VISIBLE);
-                errorScreen.setVisibility(View.GONE);
-
-            }
-        };
     }
 
     public void changeUi(){
